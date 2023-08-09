@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "npx webpack serve",
     "deploy": "npm run build && npm run clear-gh-pages && npm run copy-dist && npm run push-gh-pages",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "config": "code webpack.config.js",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -20,14 +22,17 @@
   },
   "homepage": "https://github.com/hrv3str/odin-to-do-list#readme",
   "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "babel-loader": "^8.3.0",
     "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.8.1",
     "date-fns": "^2.30.0",
+    "html-webpack-plugin": "^5.5.3",
+    "normalize.css": "^8.0.1",
     "style-loader": "^3.3.3",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.7",
-    "babel-loader": "^8.2.3"
+    "webpack-dev-server": "^4.15.1"
   }
 }
