@@ -1,0 +1,33 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.0",
+  "description": "Mock todo app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "npx webpack serve",
+    "deploy": "npm run build && npm run clear-gh-pages && npm run copy-dist && npm run push-gh-pages",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hrv3str/odin-to-do-list.git"
+  },
+  "author": "hrv3str",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hrv3str/odin-to-do-list/issues"
+  },
+  "homepage": "https://github.com/hrv3str/odin-to-do-list#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "date-fns": "^2.30.0",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "babel-loader": "^8.2.3"
+  }
+}
