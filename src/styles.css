@@ -7,3 +7,76 @@
     --font-first: 'Exo 2', sans-serif;
     --font-second: 'Marcellus', serif;
 }
+
+body {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+}
+
+#header {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--col-first);
+}
+
+.logo {
+    content: url(./favicon.svg);
+    height: auto;
+    width: 3rem;
+    padding-left: 1rem;
+}
+
+.logo-text {
+    vertical-align: baseline;
+    font-family: var(--font-second);
+    color: var(--col-third);
+}
+
+#side-bar {
+    grid-column: 1 / 2;
+    background-color: var(--col-second);
+}
+
+#main {
+    grid-column: 2 / 3;
+}
+
+#side-bar,
+#main {
+    height: calc(100% - 9rem);
+    padding-top: 5rem;
+    padding-bottom: 4rem;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    width: 100%;
+    background-color: var(--col-first);
+    text-align: center;
+    font-family: var(--font-first);
+    color: var(--col-fourth);
+    font-size: 1.2em;
+}
+
+.git-logo {
+    content: url(./github.svg);
+    height: 1em;
+    width: auto;
+    padding-left: 0.5em;
+}
+
+.git-logo:hover {
+    opacity: 0.65;
+    transform: translateY(0.15em);
+    transition: 300ms;
+}
+
