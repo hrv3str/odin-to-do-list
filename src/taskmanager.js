@@ -10,7 +10,7 @@ export const manageTasks = (() => {
     const currentDate = new Date();
     const formattedDate = format(currentDate, 'dd-MM-yyyy');
 
-    const create = (type, name, description, dueDate) => {
+    const create = (type, name, description, dueDate, priority) => {
         const object =  {
             type: type,
             container: [],
@@ -20,7 +20,8 @@ export const manageTasks = (() => {
             creationDate: formattedDate,
             dueDate: dueDate,
             parent:'',
-            complete: false
+            complete: false,
+            priority: priority
         };
 
         console.log(`${object.type} ${object.techName} created`)
@@ -49,7 +50,7 @@ export const manageTasks = (() => {
     };
 
     const global = (() =>{
-        const container = create('global-c', '', 'container');
+        const container = create('container', 'global-c', '', '');
 
         delete container.name;
         delete container.description;
@@ -58,6 +59,7 @@ export const manageTasks = (() => {
         delete container.complete;
         delete container.creationDate;
         delete container.dueDate
+        delete container.priority
 
         const update = (arr) => {
             container.container = [];
