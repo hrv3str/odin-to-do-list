@@ -85,3 +85,10 @@ export const manageTasks = (() => {
         isOutdated
     }
 })();
+
+const global = {
+    read: manageTasks.global.read,
+    update: manageTasks.global.update
+}
+
+export default global;

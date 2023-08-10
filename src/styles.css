@@ -11,7 +11,7 @@
 body {
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 8fr;
+    grid-template-columns: 1fr 7fr;
 }
 
 #header {
