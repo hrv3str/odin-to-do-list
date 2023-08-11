@@ -15,9 +15,57 @@
         <h1 class="logo-text">ToDoList</h1>
     </div>
     <div id="side-bar">
-        <div id="home"></div>
-        <div id="projects"></div>
-        <div id="notes"></div>
+        <div id="home">
+            <button
+            id="home-button"
+            value="checked">
+                Home
+                <div class="counter no-visible"
+                    id="home-counter">
+                    0
+                </div>
+            </button>
+            <div id="home-list"
+                class="sidebar-list expand">
+                    <button id="inbox">Inbox</button>
+                    <button id="today">Today</button>
+                    <button id="this-wheek">This wheek</button>
+            </div>
+        </div>
+        <div id="projects">
+            <button
+            id="projects-button"
+            value="unchecked">
+                Projects
+                <div class="counter"
+                    id="projects-counter">
+                    0
+                </div>
+            </button>
+            <div id="projects-list"
+                class="sidebar-list">
+                    <div class="dummy"></div>
+                    <div class="dummy"></div>
+                    <div class="dummy"></div>
+            </div>
+        </div>
+        <div id="notes">
+            <button
+            id="notes-button"
+            value="unchecked">
+                Notes
+                <div class="counter"
+                    id="notes-counter">
+                    0
+                </div>
+            </button>
+            <div id="notes-list"
+                class="sidebar-list">
+                    <div class="dummy"></div>
+                    <div class="dummy"></div>
+                    <div class="dummy"></div>
+            </div>
+        </div>
     </div>
     <div id="main"></div>
     <div id="footer">

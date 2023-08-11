@@ -25,6 +25,8 @@ export const manageTasks = (() => {
         };
 
         console.log(`${object.type} ${object.techName} created`)
+
+        return object;
     };
 
     const add = (object, target) => {
