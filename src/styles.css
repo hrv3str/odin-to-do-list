@@ -16,6 +16,10 @@ body {
     color: var(--col-fourth);
 }
 
+.blur {
+    filter: blur(7px);
+}
+
 .counter {
     display: grid;
     border-radius: 50%;
@@ -96,16 +100,13 @@ body {
     margin: 5px;
 }
 
-#side-bar button:hover {
+button:hover {
     cursor: pointer;
 }
 
-#home-list > button {
-    font-size: 1.5em;
-    padding-left: 2rem;
-}
-
 .sidebar-list {
+    font-size: 0.8rem;
+    padding-left: 1rem;
     height: 0;
     overflow: hidden;
     display: flex;
@@ -113,10 +114,47 @@ body {
     gap: 5px;
 }
 
-.dummy {
+.task-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
     width: 100%;
     height: 2rem;
-    background-color: var(--col-fourth);
+}
+
+#side-bar .label-name {
+    font-family: var(--font-first);
+    font-size: 1.6em;
+    font-weight: 900;
+    color: var(--col-fourth);
+    margin: 0;
+    margin-right: auto;
+}
+
+#side-bar .control,
+.control {
+    height: 1em;
+    width: 1em;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    outline: 0;
+    border: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.delete {
+    background-image: url(./close-box-outline.svg);
+}
+
+.edit {
+    background-image: url(./pencil-box-outline.svg);
+}
+
+.checked {
+    background-image: url(./check-bold.svg);
 }
 
 .expand {
@@ -125,6 +163,15 @@ body {
 
 #main {
     grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.main-list {
+    width: 100%;
+    height: 0;
+    max-height: 100%;
 }
 
 #footer {
@@ -150,5 +197,71 @@ body {
     opacity: 0.65;
     transform: translateY(0.15em);
     transition: 300ms;
+}
+
+#card-display {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    height: 100vh;;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.task-card {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 5px;
+    width: 30vw;
+    height: fit-content;
+    background-color: var(--col-first);
+    padding: 1rem;
+}
+
+.task-card h3,
+.task-card h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.task-card h3 {
+    font-size: 2rem;
+    font-family: var(--font-second);
+}
+
+.task-card h4 {
+    font-size: 1.0rem;
+    align-self: center;
+}
+
+.task-card button {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.priority-indicator {
+    background-color: red;
+    width: 30%;
+    grid-column: 2 / 4;
+    border-radius: 3rem;
+    justify-self: end;
+    opacity: 0.8;
+}
+
+.date {
+    grid-column: 2 / 4;
+    position: relative;
+    right: 0%;
+    font-size: 1.0rem;
+    align-self: center;
+}
+
+.checkbox {
+    grid-column: 3 / 4;
+    border: 3px solid var(--col-fourth);
+    border-radius: 5px;
 }
 

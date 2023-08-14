@@ -10,11 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Marcellus&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="header">
+    <div id="header" class="blur">
         <span class="logo"></span>
         <h1 class="logo-text">ToDoList</h1>
     </div>
-    <div id="side-bar">
+    <div id="side-bar" class="blur">
         <div id="home">
             <button
             id="home-button"
@@ -27,9 +27,34 @@
             </button>
             <div id="home-list"
                 class="sidebar-list expand">
-                    <button id="inbox">Inbox</button>
-                    <button id="today">Today</button>
-                    <button id="this-wheek">This wheek</button>
+                    <div id ="inbox">
+                        <button id="inbox-button"
+                            value="checked">
+                            Inbox
+                            <div class="counter no-visible"
+                                id="inbox-counter">
+                                0
+                            </div>
+                    </button>
+                    </div>
+                    <div id="today">
+                        <button id="today-button">
+                            Today
+                            <div class="counter"
+                                id="today-counter">
+                                0
+                            </div>
+                        </button>
+                    </div>
+                    <div id="this-wheek">
+                        <button id="this-wheek-button">
+                            This wheek
+                            <div class="counter"
+                                id="this-wheek-counter">
+                                0
+                            </div>
+                        </button>
+                    </div>
             </div>
         </div>
         <div id="projects">
@@ -44,9 +69,13 @@
             </button>
             <div id="projects-list"
                 class="sidebar-list">
-                    <div class="dummy"></div>
-                    <div class="dummy"></div>
-                    <div class="dummy"></div>
+                    <div class="task-label">
+                        <button class="label-name">Name</button>
+                        <button class="control edit"></button>
+                        <button class="control delete"></button>
+                    </div>
+                    <div class="task-label"></div>
+                    <div class="task-label"></div>
             </div>
         </div>
         <div id="notes">
@@ -61,15 +90,46 @@
             </button>
             <div id="notes-list"
                 class="sidebar-list">
-                    <div class="dummy"></div>
-                    <div class="dummy"></div>
-                    <div class="dummy"></div>
+                    <div class="task-label"></div>
+                    <div class="task-label"></div>
+                    <div class="task-label"></div>
             </div>
         </div>
     </div>
-    <div id="main"></div>
-    <div id="footer">
+    <div id="main" class="blur">
+        <div id="inbox-list"
+            class="main-list expand">
+        </div>
+        <div id="today-list"
+            class="main-list">
+        </div>
+        <div id="this-wheek-list"
+            class="main-list">
+        </div>
+        <div id="inbox-list"
+            class="main-list">
+        </div>
+    </div>
+    <div id="footer" class="blur">
         <p>2023 Coded by hrv3str<a class="git-logo" href="https://github.com/hrv3str" target="_blank"></a></p>
+    </div>
+    <div id="card-display">
+        <div class="task-card">
+            <h3>Name</h3>
+            <button class="control edit"
+                title="Edit task">
+            </button>
+            <button class="control delete"
+                title="Close">
+            </button>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at metus a tellus consequat ultrices. Ut vitae augue ut erat lacinia ullamcorper. Nullam malesuada ante id turpis cursus varius. Proin venenatis scelerisque libero, ac fermentum sapien venenatis in. Sed a odio nec nisi fermentum iaculis. Nam id magna id elit rhoncus posuere. Nullam euismod tristique velit, vel varius est imperdiet ut. Maecenas feugiat feugiat arcu, sit amet bibendum ipsum suscipit ut. Sed eu quam non elit bibendum pharetra. Aenean rhoncus, tellus ut cursus tristique, nunc metus bibendum eros, id facilisis lorem purus eu massa. Nulla facilisi. Sed efficitur efficitur ipsum, in pellentesque dolor venenatis ut. Nullam eu sapien nec justo euismod eleifend.</p>
+            <div class="priority-indicator red"></div>
+            <h4>Due date</h4>
+            <div class="date">21.12.2023</div>
+            <h4>Complete</h4>
+            <button class="control checkbox checked"
+                title="Mark complete"></button>
+        </div>
     </div>
 </body>
 </html>
