@@ -1,10 +1,19 @@
-import { format } from 'date-fns';
+import { format, startOfWeek, endOfWeek, isWithinInterval, isToday } from 'date-fns';
 
 export const manageTasks = (() => {
     const utylize = (input) => {
-        return input.slice(0, 8)
+        const output = input.slice(0, 8)
                     .toLowerCase()
                     .replace(/\W+/g, '-');
+
+        const numberGen = () => {
+            const min = 1;
+            const max = 9999;
+            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            return randomNumber.toString().padStart(4, '0');
+        };
+
+        return output + `-${numberGen()}`;
     };
 
     const currentDate = new Date();
@@ -75,7 +84,60 @@ export const manageTasks = (() => {
             return transContainer;
         }
 
+        const filter = ((container) => {
+            const buffer = [...container.container];
+
+            const filterType = (array, type) => {
+                if (array.length < 0) {
+                    return;
+                }
+                const tasks = array.filter(item => item.type === type);
+
+                array.forEach(item => {
+                    if (item.container && item.container.length > 0) {
+                        const nestedTasks = filterType(item.container, type);
+                        tasks.push(...nestedTasks);
+                    };
+                });
+
+                return tasks
+            };
+
+            const filterByDueDate = (array, days) => {
+                if (array.length < 0) {
+                    return;
+                }
+                const currentDate = new Date();
+                const filteredItems = array.filter(item => {
+                  if (!item.dueDate) return false;
+                  
+                  const dueDate = new Date(item.dueDate);
+                  const isInRange = days === 1 ? isToday(dueDate) : isWithinInterval(dueDate, { start: currentDate, end: new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000)) });
+                  
+                  return isInRange;
+                });
+              
+                return filteredItems;
+              };
+
+            const inbox = filterType(buffer, 'task');
+            const thisWheek = filterByDueDate(inbox, 7);
+            const today = filterByDueDate(inbox, 1);
+            const projects = filterType(buffer, 'project');
+            const notes = filterType(buffer, 'note')
+            
+            return {
+                inbox,
+                today,
+                thisWheek,
+                projects,
+                notes,
+            };
+
+        })(container);
+
         return {
+            filter,
             update,
             read
         };
