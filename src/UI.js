@@ -18,6 +18,20 @@ const display = (() => {
     const main = document.getElementById('main');
     const footer = document.getElementById('footer');
 
+    const projectsList = document.getElementById('projects-list');
+    const inboxList = document.getElementById('inbox-list');
+    const todayList = document.getElementById('inbox-list');
+    const thisWheekList = document.getElementById('this-wheek-list');
+    const notesList = document.getElementById('notes-list');
+
+
+    const homeButton = nodeListMaker('home');
+    const projectsButton = nodeListMaker('projects');
+    const notesButton = nodeListMaker('notes');
+    const inboxButton = nodeListMaker('inbox');
+    const todayButton = nodeListMaker('today');
+    const thisWheekButton = nodeListMaker('this-wheek')
+
     const blurBackGround = () => {
         const blur = (target) => {
             target.classList.add('blur');
@@ -34,42 +48,74 @@ const display = (() => {
             target.classList.remove('blur');
         };
 
-        blur(header);
-        blur(sideBar);
-        blur(main);
-        blur(footer);
+        unBlur(header);
+        unBlur(sideBar);
+        unBlur(main);
+        unBlur(footer);
     };
 
-    const homeButton = nodeListMaker('home');
-    const projectsButton = nodeListMaker('projects');
-    const notesButton = nodeListMaker('notes');
-    const inboxButton = nodeListMaker('inbox');
-    const todayButton = nodeListMaker('today');
-    const thisWheekButton = nodeListMaker('this-wheek')
+    const create = (element, className) => {
+        const item = document.createElement(element);
+        item.classList.add(className);
+        return item;
+    };
+
+    const show = (target) => {
+        target.classList.remove('no-visible');
+    }
+
+    const hide = (target) => {
+        target.classList.add('no-visible');
+    }
+
+    const expand = (target) => {
+        target.classList.add('expand');
+    }
+
+    const collapse = (target) => {
+        target.classList.remove('expand');
+    }
 
     const dropdown = (item) => {
         if(item.button.value === 'unchecked') {
-            item.list.classList.add('expand');
-            item.counter.classList.add('no-visible');
+            expand(item.list);
+            hide(item.counter);
             item.button.value = 'checked';
         } else {
-            item.list.classList.remove('expand');
-            item.counter.classList.remove('no-visible')
+            collapse(item.list);
+            show(item.counter);
             item.button.value = 'unchecked';
         };
     };
 
-    const makeTaskItem = (tname, tdescription, tdueDate, tpriority, tisComplete) => {
+    const indicatorValue = (priority, target) => {
+        switch (priority) {
+            case 'high':
+                target.classList.add('red');
+                break;
+            case 'normal':
+                target.classList.add('yellow');
+                break;
+            case 'low':
+                target.classList.add('green');
+                break;
+        }
+    }
 
-        const title = tname;
-        const description = tdescription;
-        const dueDate = tdueDate;
-        const priority = tpriority;
-        const isComplete = tisComplete;
+    const make = ((object) => {
 
-        const makeCard = (()=> {
+        const title = object.name;
+        const description = object.description;
+        const dueDate = object.dueDate;
+        const priority = object.priority;
+        const isComplete = object.isComplete;
+        const type = object.type;
+        const techName = object.techName;
+
+        const card = (title, description, dueDate, priority, isComplete, techName)=> {
             const cardBody = document.createElement('div');
             cardBody.classList.add('task-card');
+            cardBody.id = techName + '-card';
 
             const cardTitle = document.createElement('h3');
             cardTitle.textContent = title;
@@ -91,17 +137,7 @@ const display = (() => {
 
             const indicator = document.createElement('div');
             indicator.classList.add('priority-indicator');
-            switch (priority) {
-                case 'high':
-                    indicator.classList.add('red');
-                    break;
-                case 'normal':
-                    indicator.classList.add('yellow');
-                    break;
-                case 'low':
-                    indicator.classList.add('green');
-                    break;
-            }
+            indicatorValue(priority, indicator);
             cardBody.appendChild(indicator);
 
             const dueDateTitle = document.createElement('h4');
@@ -121,16 +157,17 @@ const display = (() => {
             completeCheckbox.classList.add('control', 'checkbox');
             completeCheckbox.title = 'Mark complete'
             if (isComplete) {
-                completeCheckbox.classList.add('checked');
+                cardBody.classList.add('checked');
             }
             cardBody.appendChild(completeCheckbox);
 
             return cardBody;
-        })(title, description, dueDate, priority, isComplete);
+        };
 
-        const makeCardLabel = (() => {
+        const label = (title, techName) => {
             const labelBody = document.createElement('div');
             labelBody.classList.add('task-label');
+            cardBody.id = techName + '-label';
 
             const nameButton = document.createElement('button');
             nameButton.classList.add('label-name');
@@ -146,8 +183,74 @@ const display = (() => {
             labelBody.appendChild(deleteButton);
 
             return labelBody;
-        })(title);
-    };
+        };
+
+        const listItem = (title, description, dueDate, priority, isComplete, techName) => {
+            const listItemBody = document.createElement('div');
+            listItemBody.classList.add('list-element');
+            cardBody.id = techName + '-item';
+
+            const listIndicator = document.createAttribute.createElement('div');
+            listIndicator.classList.add('list-indicator');
+            indicatorValue(priority, listIndicator);
+            listItemBody.appendChild(listIndicator);
+
+            const listName = document.createElement('p');
+            listName.textContent = title;
+            listItemBody.appendChild(listName);
+
+            const listDesc = document.createElement('p');
+            listDesc.textContent = description;
+            listItemBody.appendChild(listDesc);
+
+            const listDueDate = document.createElement('p');
+            listDueDate.textContent = dueDate;
+            listItemBody.appendChild(listDueDate);
+
+            const listDetails = create('button', 'control');
+            listDetails.classList.add('details');
+            listDetails.text.content = 'Details';
+            listDetails.title = 'Show details';
+            listItemBody.appendChild(listDetails);
+
+            const listIsComplete = create('button', 'control');
+            listIsComplete.classList.add('checkbox');
+            listIsComplete.title = 'Mark complete'
+            if (isComplete) {
+                listItemBody.classList.add('checked');
+            }
+            listItemBody.appendChild.listIsComplete;
+
+            const listEdit = create('button', 'control');
+            listEdit.classList.add('edit');
+            listEdit.title = 'Edit task';
+            listItemBody.appendChild(listEdit);
+
+            const listDelete = create('button', 'control');
+            listDelete.classList.add('edit');
+            listDelete.title = 'Delete task';
+            listItemBody.appendChild(listDelete);
+
+            return listItemBody;
+        }
+
+        return {
+            card,
+            label,
+            listItem
+        }
+
+    })();
+
+    const populateList = (array, list) => {
+        array.forEach(object => {
+            switch (list.id) {
+                case 'inbox-list':
+                    object
+            }
+        })
+    }
+
 
     const handleMenus = (e) => {
         const target = e.target;
