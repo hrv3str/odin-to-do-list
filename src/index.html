@@ -10,11 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Marcellus&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="header" class="blur">
+    <div id="header" class="">
         <span class="logo"></span>
         <h1 class="logo-text">ToDoList</h1>
     </div>
-    <div id="side-bar" class="blur">
+    <div id="side-bar" class="">
         <div id="home">
             <button
             id="home-button"
@@ -88,17 +88,25 @@
                     0
                 </div>
             </button>
-            <div id="notes-list"
-                class="sidebar-list">
-                    <div class="task-label"></div>
-                    <div class="task-label"></div>
-                    <div class="task-label"></div>
-            </div>
         </div>
     </div>
-    <div id="main" class="blur">
+    <div id="main" class="">
         <div id="inbox-list"
             class="main-list expand">
+            <div class="list-item">
+                <div class="list-indicator red"></div>
+                <p>Name</p>
+                <p>Description</p>
+                <p>Due Date</p>
+                <button class="control details"
+                    title="Show details">Details</button>
+                <button class="control checkbox"
+                    title="Mark complete"></button>
+                <button class="control edit"
+                    title="Edit task"></button>
+                <button class="control delete"
+                    title="Delete Task"></button>
+            </div>
         </div>
         <div id="today-list"
             class="main-list">
@@ -109,27 +117,16 @@
         <div id="inbox-list"
             class="main-list">
         </div>
+        <div id="notes-list"
+                class="main-list">
+        </div>
     </div>
-    <div id="footer" class="blur">
+    <div id="footer" class="">
         <p>2023 Coded by hrv3str<a class="git-logo" href="https://github.com/hrv3str" target="_blank"></a></p>
     </div>
-    <div id="card-display">
-        <div class="task-card">
-            <h3>Name</h3>
-            <button class="control edit"
-                title="Edit task">
-            </button>
-            <button class="control delete"
-                title="Close">
-            </button>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at metus a tellus consequat ultrices. Ut vitae augue ut erat lacinia ullamcorper. Nullam malesuada ante id turpis cursus varius. Proin venenatis scelerisque libero, ac fermentum sapien venenatis in. Sed a odio nec nisi fermentum iaculis. Nam id magna id elit rhoncus posuere. Nullam euismod tristique velit, vel varius est imperdiet ut. Maecenas feugiat feugiat arcu, sit amet bibendum ipsum suscipit ut. Sed eu quam non elit bibendum pharetra. Aenean rhoncus, tellus ut cursus tristique, nunc metus bibendum eros, id facilisis lorem purus eu massa. Nulla facilisi. Sed efficitur efficitur ipsum, in pellentesque dolor venenatis ut. Nullam eu sapien nec justo euismod eleifend.</p>
-            <div class="priority-indicator red"></div>
-            <h4>Due date</h4>
-            <div class="date">21.12.2023</div>
-            <h4>Complete</h4>
-            <button class="control checkbox checked"
-                title="Mark complete"></button>
-        </div>
+    <div id="card-display"
+        class="no-visible">
+        
     </div>
 </body>
 </html>
