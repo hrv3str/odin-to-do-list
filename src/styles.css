@@ -38,7 +38,8 @@ body {
     text-shadow: 0 0 2px var(--col-fourth);
 }
 
-.no-visible {
+.no-visible,
+#card-holder.no-visible {
     display: none;
     z-index: -3;
 }
@@ -215,7 +216,7 @@ button:hover {
     transition: 300ms;
 }
 
-#card-display {
+#card-holder {
     position: absolute;
     left: 0%;
     top: 0%;
@@ -224,6 +225,7 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 3;
 }
 
 .task-card {
@@ -314,4 +316,60 @@ button:hover {
     grid-column: 6 / 7;
 }
 
+.form {
+    background-color: var(--col-second);
+    width: 30vw;
+    height: fit-content;
+    padding: 1rem;
+    display: grid;
+    gap: 1rem;
+}
+
+label {
+    text-align: center;
+}
+
+label,
+legend {
+    font-family: var(--font-second);
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input,
+textarea {
+    background-color: var(--col-first);
+    border: 1px solid var(--col-fourth);
+    outline: none;
+    padding: 5px 10px;
+    font-size: 1rem;
+    color: var(--col-fourth);
+}
+
+textarea {
+    resize: none;
+}
+
+.mock-radio {
+    font-family: var(--font-first);
+    padding: 0 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.mock-radio:hover {
+    cursor: pointer;
+}
+
+input[type="radio"]:checked + .mock-radio {
+    font-size: 1.2rem;
+    background-color: var(--col-first);
+    padding:  5px 10px;
+    border-radius: 3rem;
+    transition: all 200ms ease-in;
+}
 
