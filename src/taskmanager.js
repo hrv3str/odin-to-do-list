@@ -125,8 +125,30 @@ export const manageTasks = (() => {
             const today = filterByDueDate(inbox, 1);
             const projects = filterType(buffer, 'project');
             const notes = filterType(buffer, 'note')
+
+            const counters = (() => {
+                const measure = (target) => {
+                    return target.length;
+                }
+
+                const inboxCount = measure(inbox);
+                const thisWheekCount = measure(thisWheek);
+                const todayCount = measure(today);
+                const projectsCount = measure(projects);
+                const notesCount = measure(notes);
+
+                return {
+                    inboxCount,
+                    thisWheekCount,
+                    todayCount,
+                    projectsCount,
+                    notesCount
+                }
+                
+            })();
             
             return {
+                counters,
                 inbox,
                 today,
                 thisWheek,
