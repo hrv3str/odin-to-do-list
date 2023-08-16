@@ -1,14 +1,25 @@
+import elements from './elements.js'
+//methods:
+//  addForm()
+//  editForm(target)
+
 const display = (() => {
+
+    const nodeListHolder = [];
+
     const nodeListMaker = (name) => {
         const button = document.getElementById(name + '-button');
         const list = document.getElementById(name + '-list');
         const counter = document.getElementById(name + '-counter');
     
         const item = {
+            name: name,
             button: button,
             list: list,
             counter: counter
         };
+
+        nodeListHolder.push(item);
 
         return item;
     };
@@ -18,12 +29,7 @@ const display = (() => {
     const main = document.getElementById('main');
     const footer = document.getElementById('footer');
 
-    const projectsList = document.getElementById('projects-list');
-    const inboxList = document.getElementById('inbox-list');
-    const todayList = document.getElementById('inbox-list');
-    const thisWheekList = document.getElementById('this-wheek-list');
-    const notesList = document.getElementById('notes-list');
-
+    const cardHolder = document.getElementById('card-holder');
 
     const homeButton = nodeListMaker('home');
     const projectsButton = nodeListMaker('projects');
@@ -102,7 +108,7 @@ const display = (() => {
         }
     }
 
-    const make = ((object) => {
+    const make = (object) => {
 
         const title = object.name;
         const description = object.description;
@@ -112,14 +118,14 @@ const display = (() => {
         const type = object.type;
         const techName = object.techName;
 
-        const card = (title, description, dueDate, priority, isComplete, techName)=> {
+        const card = ()=> {
             const cardBody = document.createElement('div');
             cardBody.classList.add('task-card');
             cardBody.id = techName + '-card';
 
             const cardTitle = document.createElement('h3');
             cardTitle.textContent = title;
-            cardBody.appendChild.cardTitle;
+            cardBody.appendChild(cardTitle);
 
             const editButton = document.createElement('button');
             editButton.title = 'Edit task';
@@ -142,12 +148,12 @@ const display = (() => {
 
             const dueDateTitle = document.createElement('h4');
             dueDateTitle.textContent = 'Due Date:';
-            cardBody.appendChild.apply(dueDateTitle);
+            cardBody.appendChild(dueDateTitle);
 
             const dueDateValue = document.createElement('div');
             dueDateValue.classList.add('date');
             dueDateValue.textContent = dueDate;
-            cardBody.appendChild(dueDate);
+            cardBody.appendChild(dueDateValue);
 
             const completeTitle = document.createElement('h4');
             completeTitle.textContent = 'Complete';
@@ -164,10 +170,10 @@ const display = (() => {
             return cardBody;
         };
 
-        const label = (title, techName) => {
-            const labelBody = document.createElement('div');
+        const label = () => {
+            const labelBody = document.createElement('button');
             labelBody.classList.add('task-label');
-            cardBody.id = techName + '-label';
+            labelBody.id = techName + '-button';
 
             const nameButton = document.createElement('button');
             nameButton.classList.add('label-name');
@@ -185,12 +191,12 @@ const display = (() => {
             return labelBody;
         };
 
-        const listItem = (title, description, dueDate, priority, isComplete, techName) => {
+        const listItem = () => {
             const listItemBody = document.createElement('div');
             listItemBody.classList.add('list-element');
             cardBody.id = techName + '-item';
 
-            const listIndicator = document.createAttribute.createElement('div');
+            const listIndicator = document.createElement('div');
             listIndicator.classList.add('list-indicator');
             indicatorValue(priority, listIndicator);
             listItemBody.appendChild(listIndicator);
@@ -211,6 +217,7 @@ const display = (() => {
             listDetails.classList.add('details');
             listDetails.text.content = 'Details';
             listDetails.title = 'Show details';
+            listDetails.id = techName;
             listItemBody.appendChild(listDetails);
 
             const listIsComplete = create('button', 'control');
@@ -219,7 +226,7 @@ const display = (() => {
             if (isComplete) {
                 listItemBody.classList.add('checked');
             }
-            listItemBody.appendChild.listIsComplete;
+            listItemBody.appendChild(listIsComplete);
 
             const listEdit = create('button', 'control');
             listEdit.classList.add('edit');
@@ -240,46 +247,87 @@ const display = (() => {
             listItem
         }
 
-    })();
+    };
 
-    const populateList = (array, list) => {
+    const addProjectList = (label) => {
+        const labelId = label.id;
+        const name = labelId.replace('-label', ' ');
+        const listId = labelId.replace('-label', '-list');
+
+        const list = create('div', 'main-list');
+        list.id = listId;
+        
+        main.appendChild(list);
+        const nodeList = nodeListMaker(name);
+    }
+
+    const populateList = (array, nodeList) => {
         array.forEach(object => {
-            switch (list.id) {
-                case 'inbox-list':
-                    object
+            const item = make(object);
+            switch (nodeList.list.id) {
+                case 'project-list':
+                    nodeList.list.appendChild(item.label);
+                    addProjectList(item.label);
+                    break;
+                default:
+                    nodeList.list.appendChild(item.listItem);
+                    break;
             }
         })
     }
 
+    const showCardFrame = (card) => {
+        blurBackGround();
+        show(cardHolder);
+        cardHolder.appendChild(card);
+    }
+
+    const hideCardFrame = (card) => {
+        cardHolder.removeChild(card);
+        hide(cardHolder);
+        unBlurBackGround();
+    }
+
+    const callCard = (e, array) => {
+        const techName = e.target.id;
+        const object = array.find(obj => obj.techName = techName);
+        const item = make(object);
+        const card = item.card;
+        showCardFrame(card);
+        return(card);
+    }
+
+    const callAddForm = () => {
+        const form = elements.addForm();
+        showCardFrame(form);
+        return form;
+    }
+
+    const callEditForm = (target) => {
+        const object = target;
+        const form = elements.editForm(object);
+        showCardFrame(form);
+        return form
+    }
 
     const handleMenus = (e) => {
         const target = e.target;
         console.log(`clicked on ${target.id}`);
-        switch (target.id) {
-            case 'home-button':
-                dropdown(homeButton);
-                break;
-            case 'projects-button':
-                dropdown(projectsButton);
-                break;
-            case 'notes-button':
-                dropdown(notesButton);
-                break;
-            case 'inbox-button':
-                dropdown(inboxButton);
-                break;
-            case 'today-button':
-                dropdown(todayButton);
-                break;
-            case 'this-wheek-button':
-                dropdown(thisWheekButton);
-            default: 
-                break;
-        }
+
+        const name = target.id.replace('-button', '');
+        const nodeList = nodeListHolder.find(item => item.name === name);
+
+        dropdown(nodeList);
     }
 
     return {
-        handleMenus
+        handleMenus,
+        callCard,
+        callAddForm,
+        callEditForm,
+        hideCardFrame,
+        populateList,
+        nodeListHolder
     };
     
 })();
