@@ -39,15 +39,16 @@ export const manageTasks = (() => {
     };
 
     const add = (object, target) => {
-        target.container.push(object);
-        object.parent = target;
+        object.parent = target.techName;
+        const container = target.container;
+        container.push(object);
 
         console.log(`${object.type} ${object.techName} was added to ${target.type} ${target.techName}`);
-        console.log(`${target.type} ${target.techName} is now ${JSON.stringify(target.container)}`)
+        console.log(`${target.type} ${target.techName} is now ${target.container}`);
     };
 
     const remove = (object) => {
-        const parent = object.parent;
+        const parentName = object.parent;
         parent.container = parent.container.filter(child => child !== object);
         console.log(`${object.type} ${object.techName} was removed from ${parent.type} ${parent.techName}`);
     };
@@ -61,7 +62,7 @@ export const manageTasks = (() => {
     };
 
     const global = (() =>{
-        const container = create('container', 'global-c', '', '');
+        let container = create('container', 'global-c', '', '');
 
         delete container.name;
         delete container.description;
@@ -72,16 +73,15 @@ export const manageTasks = (() => {
         delete container.dueDate
         delete container.priority
 
-        const update = (arr) => {
-            container.container = [];
-            container.container = [...arr];
+        const update = (buffer) => {
+            container = buffer;
             console.log(`${container.type} ${container.techName} is updated`);
         };
 
         const read = () => {
-            const transContainer = [...container.container];
+            const buffer = container;
             console.log(`${container.type} ${container.techName} is read`);
-            return transContainer;
+            return buffer;
         }
 
         const filter = ((container) => {
