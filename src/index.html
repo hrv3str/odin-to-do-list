@@ -68,14 +68,11 @@
                 </div>
             </button>
             <div id="projects-list"
-                class="sidebar-list">
-                    <div class="task-label">
-                        <button class="label-name">Name</button>
-                        <button class="control edit"></button>
-                        <button class="control delete"></button>
-                    </div>
-                    <div class="task-label"></div>
-                    <div class="task-label"></div>
+                class="sidebar-list no-visible">
+                <button id="add-project-button"
+                class="add">
+                        Add project
+                    </button>
             </div>
         </div>
         <div id="notes">
@@ -93,32 +90,24 @@
     <div id="main" class="">
         <div id="inbox-list"
             class="main-list expand">
-            <div class="list-item">
-                <div class="list-indicator red"></div>
-                <p>Name</p>
-                <p>Description</p>
-                <p>Due Date</p>
-                <button class="control details"
-                    title="Show details">Details</button>
-                <button class="control checkbox"
-                    title="Mark complete"></button>
-                <button class="control edit"
-                    title="Edit task"></button>
-                <button class="control delete"
-                    title="Delete Task"></button>
-            </div>
+            <button id="add-task-button"
+                class="control add">
+                    Add task
+            </button>
         </div>
         <div id="today-list"
-            class="main-list">
+            class="main-list no-visible">
         </div>
         <div id="this-wheek-list"
-            class="main-list">
+            class="main-list no-visible">
         </div>
         <div id="inbox-list"
-            class="main-list">
+            class="main-list expand">
         </div>
         <div id="notes-list"
-                class="main-list">
+                class="main-list no-visible">
+                <button id="add-note-button"
+                class="control add">Add note</button>
         </div>
     </div>
     <div id="footer" class="">
