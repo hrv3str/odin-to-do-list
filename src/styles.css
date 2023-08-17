@@ -38,12 +38,6 @@ body {
     text-shadow: 0 0 2px var(--col-fourth);
 }
 
-.no-visible,
-#card-holder.no-visible {
-    display: none;
-    z-index: -3;
-}
-
 #header {
     position: absolute;
     left: 0%;
@@ -172,8 +166,19 @@ button:hover {
     padding: 0 5px;
 }
 
-.expand {
-    height: max-content;
+.add {
+    background-color: var(--col-second);
+    color: var(--col-fourth);
+    font-size: 2rem;
+    text-align: center;
+    padding: 5px 1rem;
+    margin: 5px;
+    border-radius: 5px;
+    margin-top: auto;
+}
+
+.add::before {
+    content: "+";
 }
 
 #main {
@@ -184,10 +189,14 @@ button:hover {
 }
 
 .main-list {
+    padding-top: 5px;
     width: 100%;
     height: 0;
     max-height: 100%;
     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 
 }
 
@@ -371,5 +380,15 @@ input[type="radio"]:checked + .mock-radio {
     padding:  5px 10px;
     border-radius: 3rem;
     transition: all 200ms ease-in;
+}
+
+.no-visible,
+#card-holder.no-visible {
+    display: none;
+    z-index: -3;
+}
+
+.expand {
+    height: max-content;
 }
 
