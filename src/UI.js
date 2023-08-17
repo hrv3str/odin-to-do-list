@@ -87,7 +87,15 @@ const display = (() => {
         target.classList.add('no-visible');
     }
 
-    const dropdown = (item) => {
+    const clear = (target) => {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        };
+    };
+
+    const dropdown = (name) => {
+        const item = nodeListHolder.find(item => item.name === name);
+
         if(item.button.value === 'unchecked') {
             expand(item.list);
             hide(item.counter);
@@ -99,8 +107,8 @@ const display = (() => {
         };
     };
 
-    const addProjectList = (label) => {
-        const labelId = label.id;
+    const addProjectList = (element) => {
+        const labelId = element.id;
         const name = labelId.replace('-label', ' ');
         const listId = labelId.replace('-label', '-list');
 
@@ -111,10 +119,11 @@ const display = (() => {
         const nodeList = nodeListMaker(name);
     }
 
-    const populateList = (array, nodeList) => {
+    const populateList = (array, name) => {
+        const nodeList = nodeListHolder.find(item => item.name === name);
         const listName = nodeList.name
         const list = nodeList.list;
-        const action = () => {};
+        let action = () => {};
 
         switch (listName) {
             case 'projects':
@@ -127,8 +136,11 @@ const display = (() => {
         array.forEach((object) => {
             item = action(object);
             list.appendChild(item);
-        })
-    }
+            if (listName === 'projects') {
+                addProjectList(item);
+            }
+        });
+    };
 
     const showCardFrame = (card) => {
         blurBackGround();
@@ -163,23 +175,21 @@ const display = (() => {
         return form
     }
 
-    const handleMenus = (e) => {
-        const target = e.target;
-        console.log(`clicked on ${target.id}`);
-
-        const name = target.id.replace('-button', '');
+    const updateCounter = (count, name) => {
         const nodeList = nodeListHolder.find(item => item.name === name);
-
-        dropdown(nodeList);
+        const counter = nodeList.counter;
+        counter.textContent = count;
     }
 
     return {
-        handleMenus,
+        dropdown,
         callCard,
         callAddForm,
         callEditForm,
         hideCardFrame,
         populateList,
+        updateCounter,
+        clear
     };
     
 })();

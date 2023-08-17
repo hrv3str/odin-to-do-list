@@ -235,12 +235,12 @@ const element = (() => {
         const title = object.name;
         const techName = object.techName;
 
-        const label = document.createElement('button');
+        const label = document.createElement('div');
         label.classList.add('task-label');
-        label.id = techName + '-button';
 
         const labelContent = `
-            <button class="label-name">${title}</button>
+            <button class="label-name"
+                id="${techName}-button">${title}</button>
             <button class="control edit"
                 title="Edit project"
                 id="${techName}-edit">
