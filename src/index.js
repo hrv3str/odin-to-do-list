@@ -2,18 +2,29 @@ import 'normalize.css';
 import './styles.css';
 
 import {manageTasks} from './taskmanager.js';
-//methods: 
-//  'create(type, name, description, dueDate, priority)',
-//  'add(item, target)'
-//  'remove(item)'
-//  'isOutdated(item)'
-//  'global.update()'
-//  'global.read()'
-//  'global.filter.inbox'
-//  'global.filter.today'
-//  'global.filter.thisWheek'
-//  'global.filter.projects'
-//  'global.filter.notes'
+//methods:
+    // create:
+        // task(name, description, dueDate, priority),
+        // note(name, description),
+        // project(name)
+
+    // store(object),
+    // remove(techName),
+    // update(techName, sourceObject),
+    // locate(techName),
+    // linkToProject(techName, object),
+    // getProjectList(techName)
+
+    // global:
+        // filter:
+            // inbox,
+            // today,
+            // thisWheek,
+            // projects,
+            // notes
+
+        // update(bufferObject),
+        // read
 
 import storage from './storagemanager.js';
 //methods: read(), write()
@@ -28,6 +39,7 @@ import display from './UI.js';
     // populateList(array, name),
     // updateCounter (count, name),
     // clear(target)
+
 const sidebar = document.getElementById('side-bar');
 
 const createProject = () => {
