@@ -1,108 +1,38 @@
 import { format, startOfWeek, endOfWeek, isWithinInterval, isToday } from 'date-fns';
 
 export const manageTasks = (() => {
-    const utylize = (input) => {
-        const output = input.slice(0, 8)
-                    .toLowerCase()
-                    .replace(/\W+/g, '-');
-
-        const numberGen = () => {
-            const min = 1;
-            const max = 9999;
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-            return randomNumber.toString().padStart(4, '0');
-        };
-
-        return output + `-${numberGen()}`;
-    };
 
     const currentDate = new Date();
     const formattedDate = format(currentDate, 'dd-MM-yyyy');
 
-    const create = (type, name, description, dueDate, priority) => {
-        const object =  {
-            type: type,
-            container: [],
-            name: name,
-            techName: utylize(name),
-            description: description,
-            creationDate: formattedDate,
-            dueDate: dueDate,
-            parent:'',
-            complete: false,
-            priority: priority
-        };
+    // IIFE to store data, with functions to read, update and filter it
+    const global = (() => {
 
-        console.log(`${object.type} ${object.techName} created`)
-
-        return object;
-    };
-
-    const add = (object, target) => {
-        object.parent = target.techName;
-        const container = target.container;
-        container.push(object);
-
-        console.log(`${object.type} ${object.techName} was added to ${target.type} ${target.techName}`);
-        console.log(`${target.type} ${target.techName} is now ${target.container}`);
-    };
-
-    const remove = (object) => {
-        const parentName = object.parent;
-        parent.container = parent.container.filter(child => child !== object);
-        console.log(`${object.type} ${object.techName} was removed from ${parent.type} ${parent.techName}`);
-    };
-
-    const isOutdated = (object) => {
-        if (object.dueDate < currentDate) {
-            return true;
-        } else {
-            return false;
+        //Declaring the container
+        let container = {
+            type: 'container',
+            techName: 'global',
+            tasks: [],
+            projects: [],
+            notes: []
         }
-    };
 
-    const global = (() =>{
-        let container = create('container', 'global-c', '', '');
-
-        delete container.name;
-        delete container.description;
-        delete container.date;
-        delete container.parent;
-        delete container.complete;
-        delete container.creationDate;
-        delete container.dueDate
-        delete container.priority
-
+        // FUnction to update the container
         const update = (buffer) => {
-            container = buffer;
+            Object.assign(container, buffer);
             console.log(`${container.type} ${container.techName} is updated`);
         };
 
+        // Function to read the container
         const read = () => {
-            const buffer = container;
+            const buffer = {};
+            buffer = {...container};
             console.log(`${container.type} ${container.techName} is read`);
             return buffer;
         }
 
+        //IIFE containing filtering methods
         const filter = ((container) => {
-            const buffer = [...container.container];
-
-            const filterType = (array, type) => {
-                if (array.length < 0) {
-                    return;
-                }
-                const tasks = array.filter(item => item.type === type);
-
-                array.forEach(item => {
-                    if (item.container && item.container.length > 0) {
-                        const nestedTasks = filterType(item.container, type);
-                        tasks.push(...nestedTasks);
-                    };
-                });
-
-                return tasks
-            };
-
             const filterByDueDate = (array, days) => {
                 if (array.length < 0) {
                     return;
@@ -119,23 +49,25 @@ export const manageTasks = (() => {
               
                 return filteredItems;
               };
-
-            const inbox = filterType(buffer, 'task');
+            
+            // Ouput values
+            const inbox = [...container.tasks]
             const thisWheek = filterByDueDate(inbox, 7);
             const today = filterByDueDate(inbox, 1);
-            const projects = filterType(buffer, 'project');
-            const notes = filterType(buffer, 'note')
+            const projects = [...container.projects];
+            const notes = [...container.notes];
             
             return {
                 inbox,
                 today,
                 thisWheek,
                 projects,
-                notes,
+                notes
             };
 
-        })(container);
+        })();
 
+        // Public methods for 'global'
         return {
             filter,
             update,
@@ -143,18 +75,217 @@ export const manageTasks = (() => {
         };
     })();
 
+
+    // IIFE to create different items
+    const create = (() => {
+        // Creates techName using the pattern
+        const utylize = (input) => {
+            const output = input.slice(0, 8)
+                        .toLowerCase()
+                        .replace(/\W+/g, '-');
+
+            const hash = () => {
+                const min = 1;
+                const max = 9999;
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                return randomNumber.toString().padStart(4, '0');
+            };
+
+            return output + `-${hash()}`;
+        };
+
+        const log = (target) => {
+            console.log(`${target.type} ${target.techName} created`)
+        }
+
+        // Function to create task object
+        const task = (name, description, dueDate, priority) => {
+            const task = {
+                type: 'task',
+                name: name,
+                techName: utylize(name),
+                description: description,
+                dueDate: format(dueDate, 'dd-MM-yyyy'),
+                priority: priority,
+                isComplete: false
+            }
+
+            log(task);
+            return task;
+        }
+        
+        // Function to create note object
+        const note = (name, description) => {
+            const note = {
+                type: 'note',
+                name: name,
+                techName: utylize(name),
+                description: description
+            }
+
+            log(note);
+            return note
+        }
+
+        // Function to create project object
+        const project = (name) => {
+            const project = {
+                type: 'project',
+                name: name,
+                techName: utylize(name),
+                container: []
+            }
+
+            log(project);
+            return project
+        }
+
+        // Public methods for 'create'
+        return {
+            task,
+            note,
+            project
+        }
+    })();
+
+    const store = (object) => {
+        const buffer = global.read();
+        let log = ''
+
+        switch (object.type) {
+            case 'note':
+                buffer.notes.push(object);
+                log = 'Notes';
+                break;
+            case 'task':
+                buffer.tasks.push(object);
+                log = 'Tasks';
+                break;
+            case 'project':
+                buffer.project.push(object);
+                log = 'Projects';
+                break;
+            default:
+                console.log('Cannot store, invalid argument');
+                break;
+        }
+        
+        global.update(buffer);
+
+        console.log(`${object.type} ${object.techName} was added to ${log}`);
+    };
+
+    // finds item with the 'techName' and returns it or 'null' if item is missing
+    const find = (techName, target) => {
+        const result = Object.values(target)
+            .flatMap(array => array)
+            .find(item => item.techName === techName);
+        
+        if (result) {
+            console.log(`Found a ${result.type} for ${techName}`)
+            return result;
+        } else {
+            console.log(`Error! Found nothing for ${techName}`);
+            return null;
+        }
+    }
+
+    // Finds item with the 'techName' and removes it
+    const remove = (techName) => {
+        const buffer = global.read();
+        
+        const deletedItem = find(techName, buffer);
+
+        if (deletedItem) {
+                const key = Object.keys(buffer).find(key => buffer[key].includes(deletedItem));
+
+            if (key) {
+                const array = buffer[key];
+                array.splice(array.indexOf(deletedItem), 1);
+                global.update(buffer);
+                console.log(`${deletedItem.type} ${deletedItem.techName} was removed from ${key}`);
+            }
+        }
+    };
+
+    // Finds item with the 'techName' and updates it with object
+    const update = (techName, object) => {
+        const buffer = global.read();
+        const item = find(techName, buffer);
+
+        if (item) {
+            Object.assign(item, object);
+            global.update(buffer);
+            console.log(`${item.type} ${item.techName} was updated`);
+        }
+    }
+
+    // Finds item with the 'techName' and passes it
+    const locate = (techName) => {
+        const buffer = global.read();
+        const item = find(techName, buffer);
+        return item;
+    }
+
+    // Links object to project specified with techName
+    const linkToProject = (techName, object) => {
+        const buffer = global.read();
+        const item = find(techName, buffer);
+
+        if (item && item.type === 'project') {
+        const container = item.container;
+        const link = object.techName;
+        container.push(link);
+
+        global.update(buffer);
+
+        console.log(`${object.type} ${object.techName} was linked to ${item.type} ${item.techName}`)
+        } else if (item) {
+            console.log (`Failed to link ${object.type} ${object.techName}, ${item.type} ${item.techName} is not a project`)
+        } else {
+            console.log(`Failed to link ${object.type} ${object.techName}, project is missing`)
+        }
+    }
+
+    // Get the list of items linked in project
+    const getProjectList = (techName) => {
+        const list = [];
+        const buffer = global.read();
+
+        const project = find(techName, buffer);
+
+        if (project && project.type === 'project') {
+            const links = project.container;
+            links.forEach(link => {
+                const item = find(link, buffer);
+                list.push(item);
+            });
+            
+            console.log(`Recovered items from ${project.type} ${project.techName} to the list`)
+            return list;
+        } else if (project) {
+            console.log(`Failed to get list, ${item.type} ${item.techName} is not a project`);
+        } else {
+            console.log(`Failed to get list for ${techName}, project is missing`);
+        }
+    }
+        
     return {
         global,
         create,
-        add,
+        store,
         remove,
-        isOutdated
+        update,
+        locate,
+        linkToProject,
+        getProjectList
     }
+
 })();
 
-const global = {
-    read: manageTasks.global.read,
-    update: manageTasks.global.update
+const container = {
+    read: global.read,
+    update: global.update
 }
 
-export default global;
+export default container;
