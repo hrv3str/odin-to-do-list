@@ -240,14 +240,23 @@ const element = (() => {
 
         const labelContent = `
             <button class="label-name"
-                id="${techName}-button">${title}</button>
+                id="${techName}-label"
+                data-source="${techName}"
+                data-role="button">
+                    ${title}
+            </button>
             <button class="control edit"
                 title="Edit project"
-                id="${techName}-edit">
+                id="${techName}-edit"
+                data-source="${techName}"
+                data-role="edit-button">
             </button>
             <button class="control delete"
                 title="Delete project"
-                id="${techName}-delete"></button>
+                id="${techName}-delete"
+                data-source="${techName}"
+                data-role="delete-button">
+            </button>
         `;
 
         label.innerHTML = labelContent;

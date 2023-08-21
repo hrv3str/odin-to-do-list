@@ -9,7 +9,7 @@ export const manageTasks = (() => {
     const global = (() => {
 
         //Declaring the container
-        let container = {
+        const container = {
             type: 'container',
             techName: 'global',
             tasks: [],
@@ -25,14 +25,14 @@ export const manageTasks = (() => {
 
         // Function to read the container
         const read = () => {
-            const buffer = {};
+            let buffer = {};
             buffer = {...container};
             console.log(`${container.type} ${container.techName} is read`);
             return buffer;
         }
 
         //IIFE containing filtering methods
-        const filter = ((container) => {
+        const filter = (() => {
             const filterByDueDate = (array, days) => {
                 if (array.length < 0) {
                     return;
@@ -51,11 +51,30 @@ export const manageTasks = (() => {
               };
             
             // Ouput values
-            const inbox = [...container.tasks]
-            const thisWheek = filterByDueDate(inbox, 7);
-            const today = filterByDueDate(inbox, 1);
-            const projects = [...container.projects];
-            const notes = [...container.notes];
+            const inbox = () => {
+               const result = [...container.tasks];
+               return result;
+            }
+
+            const thisWheek = () => {
+                const result = filterByDueDate(inbox, 7);
+                return result;
+            }
+
+            const today = () => {
+                const result = filterByDueDate(inbox, 1);
+                return result;
+            }
+
+            const projects = () => {
+                const result = [...container.projects];
+                return result;
+            }
+
+            const notes = () => {
+                const result = [...container.notes];
+                return result;
+            }
             
             return {
                 inbox,
@@ -80,7 +99,7 @@ export const manageTasks = (() => {
     const create = (() => {
         // Creates techName using the pattern
         const utylize = (input) => {
-            const output = input.slice(0, 8)
+            const output = input.slice(0, 4)
                         .toLowerCase()
                         .replace(/\W+/g, '-');
 

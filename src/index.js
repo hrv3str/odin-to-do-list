@@ -54,17 +54,17 @@ const createProject = () => {
     const dueDateInput = document.getElementById('task-date');
 
     const processForm = (event) => {
-        const title = titleInput.value;
-        const description = descriptionTextArea.value;
-        const priority = priorityRadio.value;
-        const dueDate = dueDateInput.value;
+        event.preventDefault();
 
-        const project = manageTasks.create('project', title, description, dueDate, priority);
+        const title = titleInput.value;
+
+        const project = manageTasks.create.project(title);
         const buffer = manageTasks.global.read();
-        manageTasks.add(project, buffer);
+        buffer.projects.push(project);
         manageTasks.global.update(buffer);
 
-        const filteredProjects = manageTasks.global.filter.projects;
+        const filteredProjects = manageTasks.global.filter.projects();
+        console.log(filteredProjects);
 
         display.populateList(filteredProjects, 'projects');
 
@@ -72,28 +72,37 @@ const createProject = () => {
         display.updateCounter(count, 'projects');
 
         console.log('Form processed');
+        console.log(manageTasks.global.read())
 
-        form.removeEventListener('submit', processForm(event));
+        form.removeEventListener('submit', processForm);
 
         display.hideCardFrame(form);
+
+        return
     }
 
     form.addEventListener('submit', processForm);
 
 }
 
-const handleMenus = (e) => {
-    const target = e.target;
-    console.log(`clicked on ${target.id}`);
+const handleSidebar = (e) => {
+        const target = e.target;
 
-    if (target.id === 'add-project-button') {
+    if (target.dataset.role && target.dataset.source) {
+        console.log(`clicked on ${target.dataset.role}, ${target.dataset.source}`);
+    } else{
+        return
+    }
+
+    if (target.dataset.role === 'add-button' && target.dataset.source === 'projects') {
         createProject();
         return
     }
 
-    const name = target.id.replace('-button', '');
-
-    display.dropdown(name);
+    if (target.dataset.role === 'button') {
+        const name = target.dataset.source;
+        display.dropdown(name);
+    }
 }
 
-sidebar.addEventListener('click', handleMenus);
+sidebar.addEventListener('click', handleSidebar);

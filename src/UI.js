@@ -11,9 +11,9 @@ const display = (() => {
     const nodeListHolder = [];
 
     const nodeListMaker = (name) => {
-        const button = document.getElementById(name + '-button');
-        const list = document.getElementById(name + '-list');
-        const counter = document.getElementById(name + '-counter');
+        const button = document.querySelector(`[data-source="${name}"][data-role="button"]`);
+        const list = document.querySelector(`[data-source="${name}"][data-role="list"]`);
+        const counter = document.querySelector(`[data-source="${name}"][data-role="counter"]`);
     
         const item = {
             name: name,
@@ -40,6 +40,8 @@ const display = (() => {
     const inboxButton = nodeListMaker('inbox');
     const todayButton = nodeListMaker('today');
     const thisWheekButton = nodeListMaker('this-wheek')
+
+    console.log({nodeListHolder})
 
     const blurBackGround = () => {
         const blur = (target) => {
@@ -87,8 +89,8 @@ const display = (() => {
         target.classList.add('no-visible');
     }
 
-    const clear = (target) => {
-        while (element.firstChild) {
+    const clear = (element, arg) => { //Removes all children, specified by arg - 0 is all, 1 - first left
+        while (element.childElementCount > arg) {
             element.removeChild(element.firstChild);
         };
     };
@@ -113,7 +115,20 @@ const display = (() => {
         const listId = labelId.replace('-label', '-list');
 
         const list = create('div', 'main-list');
+        list.classList.add('no-visible');
         list.id = listId;
+        list.dataset.source = name;
+        list.dataset.role = 'list'
+
+        const listContent = `
+            <button
+                class="control add"
+                data-source="${name}"
+                data-role="add-button">
+                    Add task
+            </button>
+        `;
+        list.innerHTML = listContent
         
         main.appendChild(list);
         const nodeList = nodeListMaker(name);
@@ -125,6 +140,8 @@ const display = (() => {
         const list = nodeList.list;
         let action = () => {};
 
+        clear(list, 1);
+
         switch (listName) {
             case 'projects':
                 action = element.projectLabel;
@@ -134,10 +151,11 @@ const display = (() => {
         }
 
         array.forEach((object) => {
-            item = action(object);
+            const item = action(object);
             list.appendChild(item);
             if (listName === 'projects') {
                 addProjectList(item);
+                console.log('Hooked list to project')
             }
         });
     };
