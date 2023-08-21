@@ -237,6 +237,8 @@ const element = (() => {
 
         const label = document.createElement('div');
         label.classList.add('task-label');
+        label.dataset.source = techName;
+        label.dataset.role = 'label'
 
         const labelContent = `
             <button class="label-name"

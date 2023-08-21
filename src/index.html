@@ -100,6 +100,9 @@
                 class="sidebar-list no-visible"
                 data-source="projects"
                 data-role="list">
+                <div data-source="projects"
+                    data-role="content">
+                </div>
                 <button id="add-project-button"
                     class="add"
                     data-source="projects"
@@ -137,16 +140,25 @@
                 data-role="add-button">
                     Add task
             </button>
+            <div data-source="inbox"
+                data-role="content">
+            </div>
         </div>
         <div id="today-list"
             class="main-list no-visible"
             data-source="today"
             data-role="list">
+            <div data-source="today"
+                data-role="content">
+            </div>
         </div>
         <div id="this-wheek-list"
             class="main-list no-visible"
             data-source="this-wheek"
             data-role="list">
+            <div data-source="this-wheek"
+                data-role="content">
+            </div>
         </div>
         <div id="notes-list"
             class="main-list no-visible"
@@ -158,6 +170,9 @@
                     data-role="add-button">
                         Add note
                 </button>
+                <div data-source="notes"
+                data-role="content">
+            </div>
         </div>
     </div>
     <!-- footer part -->

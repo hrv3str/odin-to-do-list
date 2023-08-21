@@ -127,6 +127,10 @@ button:hover {
     color: var(--col-fourth);
     margin: 0;
     margin-right: auto;
+    max-width: 5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #side-bar .control,

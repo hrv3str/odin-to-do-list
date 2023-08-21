@@ -14,12 +14,14 @@ const display = (() => {
         const button = document.querySelector(`[data-source="${name}"][data-role="button"]`);
         const list = document.querySelector(`[data-source="${name}"][data-role="list"]`);
         const counter = document.querySelector(`[data-source="${name}"][data-role="counter"]`);
+        const content = document.querySelector(`[data-source="${name}"][data-role="content"]`);
     
         const item = {
             name: name,
             button: button,
             list: list,
-            counter: counter
+            counter: counter,
+            content: content
         };
 
         nodeListHolder.push(item);
@@ -40,8 +42,6 @@ const display = (() => {
     const inboxButton = nodeListMaker('inbox');
     const todayButton = nodeListMaker('today');
     const thisWheekButton = nodeListMaker('this-wheek')
-
-    console.log({nodeListHolder})
 
     const blurBackGround = () => {
         const blur = (target) => {
@@ -89,8 +89,8 @@ const display = (() => {
         target.classList.add('no-visible');
     }
 
-    const clear = (element, arg) => { //Removes all children, specified by arg - 0 is all, 1 - first left
-        while (element.childElementCount > arg) {
+    const clear = (element) => { //Removes all children
+        while (element.childElementCount > 0) {
             element.removeChild(element.firstChild);
         };
     };
@@ -110,20 +110,20 @@ const display = (() => {
     };
 
     const addProjectList = (element) => {
-        const labelId = element.id;
-        const name = labelId.replace('-label', ' ');
-        const listId = labelId.replace('-label', '-list');
+        const source= element.dataset.source;
+
+        const listId = source + '-list';
 
         const list = create('div', 'main-list');
         list.classList.add('no-visible');
         list.id = listId;
-        list.dataset.source = name;
+        list.dataset.source = source;
         list.dataset.role = 'list'
 
         const listContent = `
             <button
                 class="control add"
-                data-source="${name}"
+                data-source="${source}"
                 data-role="add-button">
                     Add task
             </button>
@@ -131,16 +131,18 @@ const display = (() => {
         list.innerHTML = listContent
         
         main.appendChild(list);
-        const nodeList = nodeListMaker(name);
+        const nodeList = nodeListMaker(source);
+        console.log({nodeList});
+        console.log({nodeListHolder});
     }
 
     const populateList = (array, name) => {
         const nodeList = nodeListHolder.find(item => item.name === name);
         const listName = nodeList.name
-        const list = nodeList.list;
+        const list = nodeList.content;
         let action = () => {};
 
-        clear(list, 1);
+        clear(list);
 
         switch (listName) {
             case 'projects':
@@ -155,7 +157,8 @@ const display = (() => {
             list.appendChild(item);
             if (listName === 'projects') {
                 addProjectList(item);
-                console.log('Hooked list to project')
+                console.log({item})
+                console.log(`Hooked list to ${item}`)
             }
         });
     };
