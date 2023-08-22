@@ -10,178 +10,102 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Marcellus&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- header part -->
-    <div id="header" class="">
+    <!-- header section -->
+    <div class="header">
         <span class="logo"></span>
-        <h1 class="logo-text">ToDoList</h1>
+        <h1>ToDoList</h1>
     </div>
-    <!-- sidebar part -->
-    <div id="side-bar" class="">
-        <!-- home section -->
-        <div id="home">
-            <button
-            id="home-button"
-            value="checked"
-            data-source="home"
-            data-role="button">
+    <!-- aside section -->
+    <div class="aside">
+        <!-- 'home' part -->
+        <button data-source="home"
+            data-role="label">
                 Home
                 <div class="counter no-visible"
-                    id="home-counter"
                     data-source="home"
                     data-role="counter">
                     0
                 </div>
-            </button>
-            <div id="home-list"
-                class="sidebar-list expand"
+        </button>
+        <div class="menu expand"
+            data-source="home"
+            data-role="dropdown">
+            <div class="content"
                 data-source="home"
-                data-role="list">
-                    <!-- inbox section -->
-                    <div id ="inbox">
-                        <button id="inbox-button"
-                            value="checked"
-                            data-source="inbox"
-                            data-role="button">
-                            Inbox
-                            <div class="counter no-visible"
-                                id="inbox-counter"
-                                data-source="inbox"
-                                data-role="counter">
-                                0
-                            </div>
-                    </button>
-                    </div>
-                    <!-- today section -->
-                    <div id="today">
-                        <button id="today-button"
-                            data-source="today"
-                            data-role="button">
-                            Today
-                            <div class="counter"
-                                id="today-counter"
-                                data-source="today"
-                                data-role="counter">
-                                0
-                            </div>
-                        </button>
-                    </div>
-                    <!-- this wheek section -->
-                    <div id="this-wheek">
-                        <button id="this-wheek-button"
-                            data-source="this-wheek"
-                            data-role="button">
-                            This wheek
-                            <div class="counter"
-                                id="this-wheek-counter"
-                                data-source="this-wheek"
-                                data-role="counter">
-                                0
-                            </div>
-                        </button>
-                    </div>
+                data-role="content">
+                <button data-source="inbox"
+                    data-role="label">
+                        Inbox
+                </button>
+                <button data-source="today"
+                    data-role="label">
+                        Today
+                </button>
+                <button data-source="this-wheek"
+                    data-role="label">
+                        This Wheek
+                </button>
             </div>
         </div>
-        <!-- projects section -->
-        <div id="projects">
-            <button
-            id="projects-button"
-            value="unchecked"
-            data-source="projects"
-            data-role="button">
+        <!-- 'projects part' -->
+        <button data-source="projects"
+            data-role="label">
                 Projects
                 <div class="counter"
-                    id="projects-counter"
                     data-source="projects"
                     data-role="counter">
                     0
                 </div>
-            </button>
-            <div id="projects-list"
-                class="sidebar-list no-visible"
+        </button>
+        <div class="menu no-visible"
+            data-source="projects"
+            data-role="dropdown">
+            <div class="content"
                 data-source="projects"
-                data-role="list">
-                <div data-source="projects"
-                    data-role="content">
-                </div>
-                <button id="add-project-button"
-                    class="add"
-                    data-source="projects"
-                    data-role="add-button">
-                        Add project
-                </button>
+                data-role="content">
+
+
+                    <div class="project-lable">
+                        <button class="control title">123124353455435312312</button>
+                        <button class="control edit"
+                            title="Edit project"
+                            data-source="232323"
+                            data-role="project-label"></button>
+                        <button class="control delete">  </button>
+                    </div>
+
             </div>
         </div>
-        <!-- notes section -->
-        <div id="notes">
-            <button
-            id="notes-button"
-            value="unchecked"
-            data-source="notes"
-            data-role="button">
+        <!-- 'notes' part -->
+        <button data-source="notes"
+            data-role="label">
                 Notes
                 <div class="counter"
-                    id="notes-counter"
                     data-source="notes"
                     data-role="counter">
                     0
                 </div>
-            </button>
-        </div>
+        </button>
     </div>
-    <!-- main part -->
-    <div id="main" class="">
-        <div id="inbox-list"
-            class="main-list expand"
+    <!-- main-section -->
+    <div class="main">
+        <div class="menu no-visible"
             data-source="inbox"
-            data-role="list">
-            <button id="add-task-button"
-                class="control add"
-                data-source="inbox"
-                data-role="add-button">
-                    Add task
-            </button>
-            <div data-source="inbox"
-                data-role="content">
-            </div>
+            data-role="dropdown">
         </div>
-        <div id="today-list"
-            class="main-list no-visible"
+        <div class="menu no-visible"
             data-source="today"
-            data-role="list">
-            <div data-source="today"
-                data-role="content">
-            </div>
+            data-role="dropdown">
         </div>
-        <div id="this-wheek-list"
-            class="main-list no-visible"
+        <div class="menu no-visible"
             data-source="this-wheek"
-            data-role="list">
-            <div data-source="this-wheek"
-                data-role="content">
-            </div>
+            data-role="dropdown">
         </div>
-        <div id="notes-list"
-            class="main-list no-visible"
+        <div class="menu no-visible"
             data-source="notes"
-            data-role="list">
-                <button id="add-note-button"
-                    class="control add"
-                    data-source="notes"
-                    data-role="add-button">
-                        Add note
-                </button>
-                <div data-source="notes"
-                data-role="content">
-            </div>
+            data-role="dropdown">
         </div>
     </div>
-    <!-- footer part -->
-    <div id="footer" class="">
-        <p>2023 Coded by hrv3str<a class="git-logo" href="https://github.com/hrv3str" target="_blank"></a></p>
-    </div>
-    <!-- pop ups part -->
-    <div id="card-holder"
-        class="no-visible">
-    </div>
+    <div class="footer"></div>
 </body>
 </html>

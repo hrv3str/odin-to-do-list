@@ -40,7 +40,7 @@ import display from './UI.js';
     // updateCounter (count, name),
     // clear(target)
 
-const sidebar = document.getElementById('side-bar');
+const sidebar = document.querySelector('div.aside');
 
 const createProject = () => {
     const list = document.getElementById('projects-list');
@@ -99,7 +99,7 @@ const handleSidebar = (e) => {
         return
     }
 
-    if (target.dataset.role === 'button') {
+    if (target.dataset.role === 'label') {
         const name = target.dataset.source;
         display.dropdown(name);
     }
