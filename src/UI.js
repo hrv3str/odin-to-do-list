@@ -5,7 +5,6 @@ import element from './elements.js'
 
 const display = (() => {
     const cardScreen = document.querySelector('div.card-screen');
-    const projectLabelHolder = document.querySelector(`[data-source="projects"][data-role="content"]`);
     const header = document.querySelector('div.header');
     const aside = document.querySelector('div.aside');
     const main = document.querySelector('div.main');
@@ -77,17 +76,87 @@ const display = (() => {
         }
     }
 
-    const toggleCardScreen = () => {
+    const toggleCardScreen = (card) => {
         header.classList.toggle('blur');
         aside.classList.toggle('blur');
         main.classList.toggle('blur');
         footer.classList.toggle('blur');
         cardScreen.classList.toggle('no-visible');
+
+        if (!cardScreen.classList.contains('no-visible')) {
+            cardScreen.appendChild(card);
+        } else {
+            cardScreen.removeChild(card);
+        }
     }
+
+    const form = (() => {
+        const edit = (() => {
+            const project = () => {
+                return element.form.project('edit');
+            }
+
+            const note = () => {
+                return element.form.note('edit');
+            }
+
+            const task = () => {
+                return element.form.task('edit')
+            }
+
+            return {
+                task,
+                project,
+                note
+            }
+        })()
+
+        const create = (() => {
+            const project = () => {
+                return element.form.project('create');
+            }
+
+            const note = () => {
+                return element.form.note('create');
+            }
+
+            const task = () => {
+                return element.form.task('create')
+            }
+
+            return {
+                task,
+                project,
+                note
+            }
+        })()
+
+        return {
+            edit,
+            create
+        }
+    })();
+
+    const refresh = (() => {
+        const projects = (array) => {
+            const section = nodeListHolder.find (item => item.name === 'projects');
+            const container = section.content
+            container.innerHTML = '';
+            array.forEach(object => {
+                const label = element.projectLabel(object);
+                container.appendChild(label)
+            })
+            const counter = section.counter;
+            const count = array.length;
+            counter.textContent = count;
+        }
+    })()
 
     return {
         dropdown,
-        toggleCardScreen
+        toggleCardScreen,
+        form,
+        refresh
     }
 })();
 

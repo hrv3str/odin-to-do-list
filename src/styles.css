@@ -3,6 +3,10 @@
     --col-second: #455d7a;
     --col-third: #f95959;
     --col-fourth: #e3e3e3;
+    --col-red: rgba(255, 0, 0, 0.850);
+    --col-green: rgba(0, 128, 0, 0.850);
+    --col-yellow: rgba(255, 255, 0, 0.85);
+    
 
     --font-first: 'Exo 2', sans-serif;
     --font-second: 'Marcellus', serif;
@@ -186,6 +190,116 @@ button:hover {
     height: 100%;
 }
 
+/* form styles */
+
+form {
+    background-color: var(--col-first);
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+fieldset {
+    border: none;
+    border-top: 3px solid var(--col-second);
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 10px;
+}
+
+fieldset > p,
+label {
+    font-family: var(--font-first);
+    font-size: 1.5rem;
+    margin: 5px
+}
+
+/* radio inputs styles */
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked +
+.mock-radio {
+    color: var(--col-first);
+    text-shadow: 0 0 10px var(--col-fourth);
+}
+
+input[value="high"]:checked +
+.mock-radio {
+    background-color: var(--col-red);
+}
+
+input[value="normal"]:checked +
+.mock-radio {
+    background-color: var(--col-yellow);
+}
+
+input[value="low"]:checked +
+.mock-radio {
+    background-color: var(--col-green);
+}
+
+.mock-radio {
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.mock-radio:hover {
+    cursor: pointer;
+}
+
+.form-header {
+    text-align: center;
+}
+
+.description {
+    flex-direction: column;
+    padding-right: 1rem;
+}
+
+.project::after {
+    content: ' project';
+}
+
+.note::after {
+    content: ' note';
+}
+
+.task::after {
+    content: ' task';
+}
+
+button[type="submit"] {
+    justify-content: center;
+    font-size: 2rem;
+    font-family: var(--font-first);
+    margin: 10px 0px;
+}
+
+/* input styles */
+input,
+textarea {
+    background-color: var(--col-second);
+    border-radius: 5px;
+    color: var(--col-fourth);
+    border: 1px solid var(--col-second);
+    font-size: 1.2rem;
+    flex: 1;
+    font-family: var(--font-first);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--col-first);
+    opacity: 0.5;
+}
+
+textarea {
+    resize: none;
+}
+
 /* functional classes */
 .expand {
     height: fit-content;
@@ -197,6 +311,7 @@ button:hover {
 }
 
 .blur {
-    filter: blur(5px);
+    filter: blur(15px);
     z-index: -4;
+    pointer-events: none;
 }
