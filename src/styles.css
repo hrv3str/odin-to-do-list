@@ -165,6 +165,7 @@ button:hover {
     color: var(--col-first);
 }
 
+/* footer section */
 .footer {
     grid-column: 1 / 3;
     grid-row: 3 / 4;
@@ -172,6 +173,20 @@ button:hover {
     color: var(--col-fourth);
 }
 
+/* card screen section */
+.card-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* functional classes */
 .expand {
     height: fit-content;
 }
@@ -179,4 +194,9 @@ button:hover {
 .no-visible {
     display: none;
     z-index: -5;
+}
+
+.blur {
+    filter: blur(5px);
+    z-index: -4;
 }
