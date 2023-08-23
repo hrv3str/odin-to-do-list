@@ -1,14 +1,17 @@
 import element from './elements.js'
 //methods:
-//  addForm,
-//  editForm(object),
-//  taskCard(object),
 //  projectLabel(object),
-//  listItem(object)
+
 
 const display = (() => {
+    const cardScreen = document.querySelector('div.card-screen');
+    const projectLabelHolder = document.querySelector(`[data-source="projects"][data-role="content"]`);
+    const header = document.querySelector('div.header');
+    const aside = document.querySelector('div.aside');
+    const main = document.querySelector('div.main');
+    const footer = document.querySelector('div.footer');
     
-    const nodeListHolder = [];
+    const nodeListHolder = []; //Array to hold nodelists
 
     //creates node-list for groups of elements
     const nodeListCreator = (source) => {
@@ -35,29 +38,20 @@ const display = (() => {
     nodeListHolder.push(nodeProjects);
 
     const nodeNotes = nodeListCreator('notes');
+    delete nodeNotes.menu;
     nodeListHolder.push(nodeNotes);
-
-    const nodeInbox = nodeListCreator('inbox');
-    delete nodeInbox.counter
-    nodeListHolder.push(nodeInbox);
-
-    const nodeToday = nodeListCreator('today');
-    delete nodeToday.counter
-    nodeListHolder.push(nodeToday);
-
-    const nodeThisWheek = nodeListCreator('this-wheek');
-    delete nodeThisWheek.counter;
-    nodeListHolder.push(nodeThisWheek);
-
+    
     const collapseAllNenus = () => {
 
         nodeListHolder.forEach((node) => {
-            if(node.menu.classList.contains('expand')) {
-                node.menu.classList.remove('expand')
-            }
+            if (node.hasOwnProperty('menu')) {
+                if(node.menu.classList.contains('expand')) {
+                    node.menu.classList.remove('expand')
+                }
 
-            if(!node.menu.classList.contains('no-visible')) {
-                node.menu.classList.add('no-visible')
+                if(!node.menu.classList.contains('no-visible')) {
+                    node.menu.classList.add('no-visible')
+                }
             }
 
             if(node.hasOwnProperty('counter')) {
@@ -73,15 +67,27 @@ const display = (() => {
 
         collapseAllNenus()
 
-        nodeList.menu.classList.remove('no-visible');
-        nodeList.menu.classList.add('expand');
+        if (nodeList.hasOwnProperty('menu')) {
+            nodeList.menu.classList.remove('no-visible');
+            nodeList.menu.classList.add('expand');
+        };
+
         if(nodeList.hasOwnProperty('counter')) {
             nodeList.counter.classList.add('no-visible');
         }
     }
 
+    const toggleCardScreen = () => {
+        header.classList.toggle('blur');
+        aside.classList.toggle('blur');
+        main.classList.toggle('blur');
+        footer.classList.toggle('blur');
+        cardScreen.classList.toggle('no-visible');
+    }
+
     return {
         dropdown,
+        toggleCardScreen
     }
 })();
 
