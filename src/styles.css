@@ -64,7 +64,8 @@ button {
     border-radius: 5px;
 }
 
-.content > button {
+.content > button,
+button[data-role="add-button"] {
     justify-content: flex-end;
     font-family: var(--font-first);
     text-align: right;
@@ -75,6 +76,12 @@ button {
         var(--col-second)
     );
     overflow: hidden;
+}
+
+
+button[data-role="add-button"]:before {
+    content: '+';
+    padding-right: 5px;
 }
 
 button:hover {
