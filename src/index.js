@@ -32,27 +32,16 @@ import storage from './storagemanager.js';
 import display from './UI.js';
 //methods:
     //dropdown(name),
-    // callCard(e, array),
-    // callAddForm(),
-    // callEditForm(target),
-    // hideCardFrame(card),
-    // populateList(array, name),
-    // updateCounter (count, name),
-    // clear(target)
+    //toggleCardScreen()
 
 const sidebar = document.querySelector('div.aside');
 
 const createProject = () => {
-    const list = document.getElementById('projects-list');
-    const form = display.callAddForm();
-    const typeRadio = document.getElementById('type-project');
-    typeRadio.checked = true;
+    const form = display.form.create.project();
+    display.toggleCardScreen(form)
 
-    const titleInput = document.getElementById('title-input');
-    const descriptionTextArea = document.getElementById('task-desc');
-    const priorityRadio = document.querySelector('input[name="priority"]:checked');
-    const dueDateInput = document.getElementById('task-date');
-
+    const titleInput = document.getElementById('form-title');
+    
     const processForm = (event) => {
         event.preventDefault();
 
@@ -66,17 +55,14 @@ const createProject = () => {
         const filteredProjects = manageTasks.global.filter.projects();
         console.log(filteredProjects);
 
-        display.populateList(filteredProjects, 'projects');
-
-        const count = filteredProjects.length;
-        display.updateCounter(count, 'projects');
+        display.refresh.projects(filteredProjects);
 
         console.log('Form processed');
         console.log(manageTasks.global.read())
 
         form.removeEventListener('submit', processForm);
 
-        display.hideCardFrame(form);
+        display.toggleCardScreen(form);
 
         return
     }
