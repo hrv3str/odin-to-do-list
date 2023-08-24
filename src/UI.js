@@ -66,12 +66,12 @@ const display = (() => {
 
         collapseAllNenus()
 
-        if (nodeList.hasOwnProperty('menu')) {
+        if ('menu' in nodeList) {
             nodeList.menu.classList.remove('no-visible');
             nodeList.menu.classList.add('expand');
         };
 
-        if(nodeList.hasOwnProperty('counter')) {
+        if('counter' in nodeList) {
             nodeList.counter.classList.add('no-visible');
         }
     }
@@ -143,20 +143,66 @@ const display = (() => {
             const container = section.content
             container.innerHTML = '';
             array.forEach(object => {
-                const label = element.projectLabel(object);
+                const label = element.project.label(object);
                 container.appendChild(label)
             })
             const counter = section.counter;
             const count = array.length;
             counter.textContent = count;
         }
+
+        const main = () => {
+            const main = document.querySelector('div.main')
+            while (main.firstChild) {
+                main.removeChild(main.firstChild);
+              }
+        } 
+
+        return {
+            projects,
+            main
+        }
+    })()
+
+    const show = (() => {
+        const project = (object, inbox) => {
+            const allTasks = [...inbox];
+            const linkedTasks = [...object.container];
+            const taskObjects = []
+            linkedTasks.forEach(link => {
+                const target = allTasks.find(item => item.techName === link);
+                if (target) {
+                    taskObjects.push(target);
+                } else {
+                    return
+                }
+            })
+
+            const body = element.project.mainFrame(object);
+            const container = body.querySelector(`[data-role="content"]`);
+
+            taskObjects.forEach(object => {
+                const label = element.task.label(object)
+                container.appendChild(label)
+            });
+
+            refresh.main();
+
+            main.appendChild(body)
+        }
+
+        return {
+            project
+        }
+
     })()
 
     return {
         dropdown,
         toggleCardScreen,
         form,
-        refresh
+        refresh,
+        show
     }
 })();
 

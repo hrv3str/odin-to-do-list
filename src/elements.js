@@ -200,52 +200,166 @@ const element = (() => {
 
     })();
 
-    //generates project label
-    const projectLabel = (object) => { // Takes project object as argument
-        const name = object.name; //Collects project data
-        const source = object.techName
-        cutName = () => { //Generates name for HTML
-            let cutUp = '';
-            if (name.length > 10) {
-            cutUp = name.slice(0, 10);
-            cutUp += '...';
-            return cutUp;
-          } else {
-            return name;
-          }
+    const task = (() => {
+        const label = (object) => {
+            const source = object.techName;
+            const dueDate = object.dueDate;
+            const priority = object.priority;
+            const color = () => {
+                switch (priority) {
+                    case 'high':
+                        return 'red';
+                    case 'normal':
+                        return 'yellow';
+                    case 'low':
+                        return 'green'
+                }
+            }
+            const isComplete = object.isComplete;
+            const checked = () => {
+                switch (isComplete) {
+                    case true:
+                        return 'checked';
+                    case false:
+                        return '';
+                }
+            }
+            const lineThrough = () => {
+                switch (isComplete) {
+                    case true:
+                        return 'line-through';
+                    case false:
+                        return '';
+                }
+            }
+
+            const body = document.createElement('div');
+            body.classList.add('task-label');
+
+            const bodyContent = `
+                <div class="indicator ${color}"></div>
+                <button
+                    data-source="${source}"
+                    data-role="task-name"
+                    class="${lineThrough()}">
+                        Task name
+                </button>
+                <div class="task-date">
+                    Due date: ${dueDate}
+                </div>
+                <input type="checkbox"
+                    id="complete-${source}"
+                    ${checked()}>
+                <label for="complete-${source}"
+                    class="mock-checkbox control"
+                    data-source="${source}"
+                    data-role="mark-complete button"
+                    title="Mark complete">
+                </label>
+                <button data-source="${source}"
+                    data-role="edit-button"
+                    class="control edit"
+                    title="Edit task">
+                </button>
+                <button data-source="${source}"
+                    data-role="delete-button"
+                    class="control delete"
+                    title="Delete task">
+                </button>
+            `;
+
+            body.innerHTML = bodyContent;
+            return body
         }
 
-        const labelBody = document.createElement('div'); //Creates label body
-        labelBody.classList.add('project-label');
+        return {
+            label
+        }
+    })();
 
-        //Generates content according to gathered info
-        const labelBodyContent = `
-            <button class="control title"
-                title="View project"
-                data-source="${source}"
-                data-role="label">
-                ${cutName()}
-            </button>
+    const project = (() => {
+        //generates project label
+        const label = (object) => { // Takes project object as argument
+            const name = object.name; //Collects project data
+            const source = object.techName
+            const cutName = () => { //Generates name for HTML
+                let cutUp = '';
+                if (name.length > 10) {
+                cutUp = name.slice(0, 10);
+                cutUp += '...';
+                return cutUp;
+            } else {
+                return name;
+            }
+            }
 
-            <button class="control edit"
-                title="Edit project"
-                data-source="${source}"
-                data-role="edit">
-            </button>
+            const labelBody = document.createElement('div'); //Creates label body
+            labelBody.classList.add('project-label');
 
-            <button class="control delete"
-                title="Delete project"
-                data-source="${source}"
-                data-role="delete"></button>
-        `;
+            //Generates content according to gathered info
+            const labelBodyContent = `
+                <button class="control title"
+                    title="View project"
+                    data-source="${source}"
+                    data-role="project-label">
+                    ${cutName()}
+                </button>
 
-        labelBody.innerHTML = labelBodyContent;
+                <button class="control edit"
+                    title="Edit project"
+                    data-source="${source}"
+                    data-role="edit">
+                </button>
 
-        return labelBody //Returns label
-    }
+                <button class="control delete"
+                    title="Delete project"
+                    data-source="${source}"
+                    data-role="delete"></button>
+            `;
+
+            labelBody.innerHTML = labelBodyContent;
+
+            return labelBody //Returns label
+        }
+
+        // Creates frame for the main screen to display project
+        const mainFrame = (object) => {
+            const name = object.name;
+            const source = object.techName;
+
+            const body = document.createElement('div')
+            body.classList.add('main-container')
+
+            const bodyContent = `
+                <div class="main-header">
+                    <h2>
+                        Project ${name}
+                    </h2>
+                        <button data-role="project-add-button"
+                        data-source="${source}">
+                            add task
+                    </button>
+                </div>
+                <div data-role="content"
+                    data-source="${source}">
+                </div>
+            `;
+
+            body.innerHTML = bodyContent;
+            return body //Returns frame
+        }
+
+        //Public methods
+        return {
+            label,
+            mainFrame
+        }
+
+    })();
 
     return {
-        projectLabel,
+        project,
+        task,
         form
     }
     

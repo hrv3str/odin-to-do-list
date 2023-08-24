@@ -34,8 +34,6 @@ import display from './UI.js';
     //dropdown(name),
     //toggleCardScreen()
 
-const sidebar = document.querySelector('div.aside');
-
 const createProject = () => {
     const form = display.form.create.project();
     display.toggleCardScreen(form)
@@ -71,18 +69,31 @@ const createProject = () => {
 
 }
 
-const handleSidebar = (e) => {
-        const target = e.target;
+const showProject = (name) => {
+    const buffer = manageTasks.global.read();
+    const allTasks = buffer.tasks;
+    const target = buffer.projects.find(item => item.techName === name);
+    display.show.project(target, allTasks);
+}
+
+function handleClicks(e) {
+    const target = e.target;
 
     if (target.dataset.role && target.dataset.source) {
         console.log(`clicked on ${target.dataset.role}, ${target.dataset.source}`);
-    } else{
-        return
+    } else {
+        return;
     }
 
     if (target.dataset.role === 'add-button' && target.dataset.source === 'projects') {
         createProject();
-        return
+        return;
+    }
+
+    if (target.dataset.role === 'project-label') {
+        const name = target.dataset.source;
+        showProject(name);
+        return;
     }
 
     if (target.dataset.role === 'label') {
@@ -91,4 +102,4 @@ const handleSidebar = (e) => {
     }
 }
 
-sidebar.addEventListener('click', handleSidebar);
+document.addEventListener('click', handleClicks);

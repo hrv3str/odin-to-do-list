@@ -51,16 +51,18 @@ body {
     padding: 5px;
     padding-left: 1rem;
     gap: 5px;
+    min-width: fit-content;
 }
 
-button {
+button,
+.mock-checkbox {
     font-size: 2rem;
     font-family: var(--font-second);
     color: var(--col-fourth);
     width: 100%;
     background-color: var(--col-second);
     outline: none;
-    border: none;
+    border: 1px solid var(--col-first);
     text-align: left;
     display: flex;
     justify-content: flex-start;
@@ -69,7 +71,8 @@ button {
 }
 
 .content > button,
-button[data-role="add-button"] {
+button[data-role="add-button"],
+button[data-role="project-add-button"] {
     justify-content: flex-end;
     font-family: var(--font-first);
     text-align: right;
@@ -83,12 +86,14 @@ button[data-role="add-button"] {
 }
 
 
-button[data-role="add-button"]:before {
+button[data-role="add-button"]:before,
+button[data-role="project-add-button"]::before {
     content: '+';
     padding-right: 5px;
 }
 
-button:hover {
+button:hover,
+.mock-checkbox:hover {
     cursor: pointer;
     border: 1px solid var(--col-third);
     box-shadow: 0 0 3px var(--col-fourth);
@@ -96,11 +101,13 @@ button:hover {
 
 .control {
     display: block;
-    height: auto;
-    width: 1em;
+    height: 1.5em;
+    width: 1.5em;
     font-family: var(--font-first);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     background: transparent;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .counter {
@@ -133,7 +140,7 @@ button:hover {
     gap: 5px;
 }
 
-.project-lable {
+.project-label {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -143,6 +150,7 @@ button:hover {
 
 .title {
     width: fit-content;
+    flex-grow: 1;
 }
 
 .edit {
@@ -153,20 +161,103 @@ button:hover {
     background-image: url(./close-box-outline.svg);
 }
 
-.edit,
-.delete {
-    height: 1.5em;
-    width: 1.5em;
-    flex-shrink: 0;
-    flex-grow: 0;
+/* main section */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    padding: 1rem;
 }
 
+.main-header > h2 {
+    margin: 0px 10px;
+    margin-left: 0px;
+    background-color: var(--col-first);
+    padding: 10px;
+    color: var(--col-fourth);
+    font-family: var(--font-second);
+    border-radius: 5px;
+    text-shadow: 0 0 5px var(--col-third);
+}
+
+.main-header,
+.task-label {
+    text-align: center;
+    display: flex;
+    gap: 5px;
+}
 
 .main {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
     background-color: var(--col-fourth);
     color: var(--col-first);
+}
+
+/* task label styles */
+
+.indicator {
+    width: 0.5em;
+    height: 2em;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.red {
+    background-color: var(--col-red);
+}
+
+.green {
+    background-color: var(--col-green);
+}
+
+.yellow {
+    background-color: var(--col-yellow);
+}
+
+.line-through {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.task-label {
+    background-color: var(--col-first);
+    padding: 5px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+button[data-role="task-name"] {
+    font-size: 1.5em;
+    font-family: var(--font-first);
+    background-color: transparent;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.mock-checkbox {
+    width: 0.8em;
+    height: 1.3em;
+    padding: 1px 6px;
+    background-image: url(./checkbox-blank-outline.svg);
+    border: 1px solid var(--col-first);
+    border-radius: 5px;
+    margin: 0;
+    transition: background-image 200ms ease-in;
+}
+
+input[type="checkbox"]:checked +
+.mock-checkbox {
+    background: url(./checkbox-marked-outline.svg);
+    transition: all 200ms ease-in;
+}
+
+.task-date {
+    color: var(--col-fourth);
+    font-family: var(--font-first);
 }
 
 /* footer section */
@@ -257,18 +348,6 @@ input[value="low"]:checked +
 .description {
     flex-direction: column;
     padding-right: 1rem;
-}
-
-.project::after {
-    content: ' project';
-}
-
-.note::after {
-    content: ' note';
-}
-
-.task::after {
-    content: ' task';
 }
 
 button[type="submit"] {
