@@ -118,13 +118,13 @@ export const manageTasks = (() => {
         }
 
         // Function to create task object
-        const task = (name, description, dueDate, priority) => {
+        const task = (name, description, dateInput, priority) => {
             const task = {
                 type: 'task',
                 name: name,
                 techName: utylize(name),
                 description: description,
-                dueDate: format(dueDate, 'dd-MM-yyyy'),
+                dueDate: format(new Date(dateInput),'dd-MM-yyyy'),
                 priority: priority,
                 isComplete: false
             }

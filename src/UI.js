@@ -83,9 +83,9 @@ const display = (() => {
         footer.classList.toggle('blur');
         cardScreen.classList.toggle('no-visible');
 
-        if (!cardScreen.classList.contains('no-visible')) {
+        if (!cardScreen.classList.contains('no-visible') && card) {
             cardScreen.appendChild(card);
-        } else {
+        } else if (card) {
             cardScreen.removeChild(card);
         }
     }
@@ -191,8 +191,13 @@ const display = (() => {
             main.appendChild(body)
         }
 
+        const task = (object) => {
+
+        }
+
         return {
-            project
+            project,
+            task
         }
 
     })()

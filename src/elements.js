@@ -202,19 +202,10 @@ const element = (() => {
 
     const task = (() => {
         const label = (object) => {
+            const name = object.name;
             const source = object.techName;
             const dueDate = object.dueDate;
             const priority = object.priority;
-            const color = () => {
-                switch (priority) {
-                    case 'high':
-                        return 'red';
-                    case 'normal':
-                        return 'yellow';
-                    case 'low':
-                        return 'green'
-                }
-            }
             const isComplete = object.isComplete;
             const checked = () => {
                 switch (isComplete) {
@@ -237,12 +228,13 @@ const element = (() => {
             body.classList.add('task-label');
 
             const bodyContent = `
-                <div class="indicator ${color}"></div>
+                <div class="indicator"></div>
                 <button
                     data-source="${source}"
                     data-role="task-name"
+                    title="Show details"
                     class="${lineThrough()}">
-                        Task name
+                        ${name}
                 </button>
                 <div class="task-date">
                     Due date: ${dueDate}
@@ -267,8 +259,31 @@ const element = (() => {
                     title="Delete task">
                 </button>
             `;
-
+            
             body.innerHTML = bodyContent;
+
+            const colorPick = () => {
+                let output = '';
+                switch (priority) {
+                    case 'high':
+                        output = 'red';
+                        break;
+                    case 'normal':
+                        output = 'yellow';
+                        break;
+                    case 'low':
+                        output = 'green';
+                        break;
+                }
+                return output;
+            }
+
+            const color = colorPick();
+
+            const indicator = body.querySelector('div.indicator');
+
+            indicator.classList.add(color);
+
             return body
         }
 
@@ -336,12 +351,14 @@ const element = (() => {
                         Project ${name}
                     </h2>
                         <button data-role="project-add-button"
-                        data-source="${source}">
+                        data-source="${source}"
+                        title="Add task to project">
                             add task
                     </button>
                 </div>
                 <div data-role="content"
-                    data-source="${source}">
+                    data-source="${source}"
+                    class="content">
                 </div>
             `;
 
