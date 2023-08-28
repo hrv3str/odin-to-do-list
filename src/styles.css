@@ -421,6 +421,7 @@ textarea {
     font-size: 1.2rem;
     font-family: var(--font-first);
     padding: 1rem 0;
+    text-overflow: wrap;
 }
 
 .card-date {
