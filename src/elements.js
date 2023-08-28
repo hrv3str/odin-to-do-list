@@ -97,7 +97,8 @@ const element = (() => {
                 <label for="form-date">Due date:</label>
                 <input type="date"
                     id="form-date"
-                    name="dueDate">
+                    name="dueDate"
+                    required>
             `;
 
             fieldSet.innerHTML = fieldContent;
@@ -201,13 +202,40 @@ const element = (() => {
     })();
 
     const task = (() => {
+        const colorPick = (object) => {
+            const priority = object.priority;
+            let output = '';
+            switch (priority) {
+                case 'high':
+                    output = 'red';
+                    break;
+                case 'normal':
+                    output = 'yellow';
+                    break;
+                case 'low':
+                    output = 'green';
+                    break;
+            }
+            return output;
+        }
+
+        const getLineThrough = (object) => {
+            const isComplete = object.isComplete;
+            switch (isComplete) {
+                case true:
+                    return 'line-through';
+                case false:
+                    return '';
+            }
+        }
+
         const label = (object) => {
             const name = object.name;
             const source = object.techName;
             const dueDate = object.dueDate;
-            const priority = object.priority;
-            const isComplete = object.isComplete;
-            const checked = () => {
+            const lineThrough = getLineThrough(object);
+            const getChecked = () => {
+                const isComplete = object.isComplete;
                 switch (isComplete) {
                     case true:
                         return 'checked';
@@ -215,14 +243,7 @@ const element = (() => {
                         return '';
                 }
             }
-            const lineThrough = () => {
-                switch (isComplete) {
-                    case true:
-                        return 'line-through';
-                    case false:
-                        return '';
-                }
-            }
+            const checked = getChecked();
 
             const body = document.createElement('div');
             body.classList.add('task-label');
@@ -233,7 +254,7 @@ const element = (() => {
                     data-source="${source}"
                     data-role="task-name"
                     title="Show details"
-                    class="${lineThrough()}">
+                    class="${lineThrough}">
                         ${name}
                 </button>
                 <div class="task-date">
@@ -241,11 +262,11 @@ const element = (() => {
                 </div>
                 <input type="checkbox"
                     id="complete-${source}"
-                    ${checked()}>
+                    ${checked}>
                 <label for="complete-${source}"
                     class="mock-checkbox control"
                     data-source="${source}"
-                    data-role="mark-complete button"
+                    data-role="mark-complete-button"
                     title="Mark complete">
                 </label>
                 <button data-source="${source}"
@@ -262,23 +283,7 @@ const element = (() => {
             
             body.innerHTML = bodyContent;
 
-            const colorPick = () => {
-                let output = '';
-                switch (priority) {
-                    case 'high':
-                        output = 'red';
-                        break;
-                    case 'normal':
-                        output = 'yellow';
-                        break;
-                    case 'low':
-                        output = 'green';
-                        break;
-                }
-                return output;
-            }
-
-            const color = colorPick();
+            const color = colorPick(object);
 
             const indicator = body.querySelector('div.indicator');
 
@@ -287,8 +292,73 @@ const element = (() => {
             return body
         }
 
+        const card = (object) => {
+            const source = object.techName;
+            const name = object.name;
+            const desc = object.description;
+            const color = colorPick(object);
+            const dueDate = object.dueDate;
+            const lineThrough = getLineThrough(object);
+            const getCheckbox = () => {
+                const isComplete = object.isComplete;
+                switch (isComplete) {
+                    case true:
+                        return 'checkbox';
+                    case false:
+                        return 'uncheckbox';
+                }
+            }
+            const checkbox = getCheckbox(object);
+
+            const body = document.createElement('div');
+            body.classList.add('card-body');
+            body.dataset.source = source;
+
+            const bodyContent = `
+                <div class="card-header">
+                    <div class="card-name ${lineThrough}">
+                        ${name}
+                    </div>
+                    <button class="control edit"
+                        title="Edit task"
+                        data-source="${source}"
+                        data-role="edit-task-button"></button>
+                    <button class="control delete"
+                        title="Close"
+                        data-role="close-button"
+                        data-source="${source}"></button>
+                </div>
+                <div class="card-description">
+                    ${desc}
+                </div>
+                <div class="indicator ${color}">
+                    <div class="card-date">
+                        Due date: ${dueDate}
+                    </div>
+                </div>
+                <div class="card-control-section">
+                    <button data-source="${source}"
+                        data-role="card-mark-complete"
+                        title="Mark complete">
+                            <span class="${checkbox}"></span>
+                            Mark complete
+                    </button>
+                    <button data-role="delete-task"
+                        data-source="${source}"
+                        title="Delete task">
+                            <span class="delete"></span>
+                            Delete task
+                    </button>
+                </div>
+            `;
+
+            body.innerHTML=bodyContent;
+            return body;
+        } 
+
         return {
-            label
+            label,
+            card
         }
     })();
 

@@ -86,7 +86,7 @@ const display = (() => {
         if (!cardScreen.classList.contains('no-visible') && card) {
             cardScreen.appendChild(card);
         } else if (card) {
-            cardScreen.removeChild(card);
+            refresh.cardScreen();
         }
     }
 
@@ -151,16 +151,26 @@ const display = (() => {
             counter.textContent = count;
         }
 
-        const main = () => {
-            const main = document.querySelector('div.main')
-            while (main.firstChild) {
-                main.removeChild(main.firstChild);
+        const removeChildren = (div) => {
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
               }
-        } 
+        }
+
+        const main = () => {
+            const main = document.querySelector('div.main');
+            removeChildren(main);
+        }
+
+        const cardScreen = () => {
+            const cardScreen = document.querySelector('div.card-screen');
+            removeChildren(cardScreen);
+        }
 
         return {
             projects,
-            main
+            main,
+            cardScreen
         }
     })()
 
@@ -192,7 +202,9 @@ const display = (() => {
         }
 
         const task = (object) => {
-
+            const card = element.task.card(object)
+            toggleCardScreen(card);
+            return card;
         }
 
         return {

@@ -90,6 +90,26 @@ const stringBuffer = (() => {
     }
 })();
 
+const cardBuffer = (() => {
+    let buffer = null;
+    const get = (item) => {
+        buffer = item;
+    }
+    const give = () => {
+        const output = buffer;
+        buffer = null;
+        return output;
+    }
+    const clear = () => {
+        buffer = null;
+    }
+    return {
+        get,
+        give,
+        clear
+    }
+})();
+
 const createTask = () => {
     return new Promise((resolve) => {
         const form = display.form.create.task();
@@ -136,7 +156,32 @@ const showProject = (name) => {
 const showTask = (name) => {
     const buffer = manageTasks.global.read();
     const target = buffer.tasks.find(item => item.techName === name);
-    display.show.task(target);
+    const card = display.show.task(target);
+    cardBuffer.get(card);
+}
+
+const toggleCompleteLabel = (source) => {
+    const buffer = manageTasks.global.read();
+    const allTasks = buffer.tasks;
+    const target = allTasks.find(item => item.techName === source);
+    const title = document.querySelector(`[data-role="task-name"][data-source="${source}"]`);
+    switch (target.isComplete) {
+        case true:
+            target.isComplete = false;
+            title.classList.remove('line-through');
+            break;
+        case false:
+            target.isComplete = true;
+            title.classList.add('line-through');
+            break;
+    }
+    manageTasks.global.update(buffer);
+}
+
+const close = () => {
+    const target = cardBuffer.give();
+    display.toggleCardScreen(target)
+    display.refresh.cardScreen();
 }
 
 const addTaskToProject = (name) => {
@@ -161,6 +206,20 @@ function handleClicks(e) {
         return;
     }
 
+    if (target.dataset.role === 'mark-complete-button') {
+        const name = target.dataset.source;
+        toggleCompleteLabel(name);
+    }
+
+    if (target.dataset.role === 'close-button') {
+        close();
+    }
+
+    if (target.dataset.role === 'task-name') {
+        const name = target.dataset.source;
+        showTask(name);
+    }
+
     if (target.dataset.role === 'add-button' && target.dataset.source === 'projects') {
         createProject();
         return;
@@ -183,7 +242,5 @@ function handleClicks(e) {
         display.dropdown(name);
     }
 }
-
-display.toggleCardScreen();
 
 document.addEventListener('click', handleClicks);
