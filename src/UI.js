@@ -86,7 +86,7 @@ const display = (() => {
         if (!cardScreen.classList.contains('no-visible') && card) {
             cardScreen.appendChild(card);
         } else if (card) {
-            refresh.cardScreen();
+            cardScreen.innerHTML = '';
         }
     }
 
@@ -152,9 +152,7 @@ const display = (() => {
         }
 
         const removeChildren = (div) => {
-            while (div.firstChild) {
-                div.removeChild(div.firstChild);
-              }
+            div.innerHTML = '';
         }
 
         const main = () => {

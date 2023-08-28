@@ -34,42 +34,6 @@ import display from './UI.js';
     //dropdown(name),
     //toggleCardScreen()
 
-const createProject = () => {
-    const form = display.form.create.project();
-    display.toggleCardScreen(form)
-
-    const titleInput = document.getElementById('form-title');
-    
-    const processForm = (event) => {
-        event.preventDefault();
-
-        const title = titleInput.value;
-
-        const project = manageTasks.create.project(title);
-        const buffer = manageTasks.global.read();
-        buffer.projects.push(project);
-        manageTasks.global.update(buffer);
-
-        const filteredProjects = manageTasks.global.filter.projects();
-        console.log(filteredProjects);
-
-        display.refresh.projects(filteredProjects);
-
-        console.log('Form processed');
-        console.log(manageTasks.global.read())
-
-        form.removeEventListener('submit', processForm);
-
-        display.toggleCardScreen(form);
-        showProject(project.techName)
-
-        return
-    }
-
-    form.addEventListener('submit', processForm);
-
-}
-
 const stringBuffer = (() => {
     let buffer = '';
     const get = (string) => {
@@ -110,6 +74,87 @@ const cardBuffer = (() => {
     }
 })();
 
+const mainStateBuffer = (() => {
+    let buffer = '';
+    const get = (string) => {
+        buffer = string;
+    }
+    const give = () => {
+        const output = buffer;
+        buffer = '';
+        return output;
+    }
+    const clear = () => {
+        buffer = '';
+    }
+    return {
+        get,
+        give,
+        clear
+    }
+})();
+
+const updateMain = () => {
+    const type = mainStateBuffer.give()
+    switch (type) {
+        case 'inbox':
+            showInbox();
+            break;
+        case 'today':
+            showToday();
+            break;
+        case 'this-wheek':
+            showThisWheek();
+            break;
+        case 'notes':
+            showNotes();
+            break;
+        case '':
+            console.log('Can not update main, buffer is empty');
+            break;
+        default:
+            showProject(type);
+            break;
+    }
+}
+
+const createProject = () => {
+    const form = display.form.create.project();
+    display.toggleCardScreen(form)
+
+    const titleInput = document.getElementById('form-title');
+    
+    const processForm = (event) => {
+        event.preventDefault();
+
+        const title = titleInput.value;
+
+        const project = manageTasks.create.project(title);
+        const buffer = manageTasks.global.read();
+        buffer.projects.push(project);
+        manageTasks.global.update(buffer);
+
+        const filteredProjects = manageTasks.global.filter.projects();
+        console.log(filteredProjects);
+
+        display.refresh.projects(filteredProjects);
+
+        console.log('Form processed');
+        console.log(manageTasks.global.read())
+
+        form.removeEventListener('submit', processForm);
+
+        display.toggleCardScreen(form)
+        display.refresh.cardScreen();
+        showProject(project.techName)
+
+        return
+    }
+
+    form.addEventListener('submit', processForm);
+
+}
+
 const createTask = () => {
     return new Promise((resolve) => {
         const form = display.form.create.task();
@@ -145,11 +190,62 @@ const createTask = () => {
     });  
 }
 
+const editTask = (source) => {
+    const buffer = manageTasks.global.read();
+    const allTasks = buffer.tasks;
+    const target = allTasks.find(item => item.techName = source);
+
+    return new Promise((resolve) => {
+        const form = display.form.edit.task();
+        display.toggleCardScreen(form);
+
+        const nameInput = document.getElementById('form-title');
+        const descInput = document.getElementById('form-description');
+        const dueDateInput = document.getElementById('form-date')
+
+        nameInput.value = target.name;
+        descInput.value = target.description;
+
+        const radio = document.querySelector(`[name="priority"][value="${target.priority}"]`);
+        if (!radio.checked) {
+            radio.checked = true;
+        } else {
+            return;
+        }
+
+        dueDateInput.value = target.noFormatDate;
+
+        const processForm = (event) => {
+            event.preventDefault()
+
+            const priorRadioChecked = document.querySelector('input[name="priority"]:checked');
+            
+            target.name = nameInput.value;
+            target.description = descInput.value;
+            target.noFormatDate = dueDateInput.value;
+            target.priority = priorRadioChecked.value;
+
+            manageTasks.global.update(buffer);
+
+            form.removeEventListener('submit', processForm);
+            display.toggleCardScreen(form);
+
+            display.refresh.main();
+            updateMain();
+
+            resolve();
+        }
+
+        form.addEventListener('submit', processForm);
+
+    });  
+}
 
 const showProject = (name) => {
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
     const target = buffer.projects.find(item => item.techName === name);
+    mainStateBuffer.get(name)
     display.show.project(target, allTasks);
 }
 
@@ -204,6 +300,11 @@ function handleClicks(e) {
         console.log(`clicked on ${target.dataset.role}, ${target.dataset.source}`);
     } else {
         return;
+    }
+
+    if (target.dataset.role === 'edit-button') {
+        const name = target.dataset.source;
+        editTask(name);
     }
 
     if (target.dataset.role === 'mark-complete-button') {

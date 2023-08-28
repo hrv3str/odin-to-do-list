@@ -124,7 +124,10 @@ export const manageTasks = (() => {
                 name: name,
                 techName: utylize(name),
                 description: description,
-                dueDate: format(new Date(dateInput),'dd-MM-yyyy'),
+                noFormatDate: dateInput,
+                get dueDate() {
+                   return format(new Date(this.noFormatDate),'dd-MM-yyyy')
+                },
                 priority: priority,
                 isComplete: false
             }
