@@ -145,7 +145,6 @@ const createProject = () => {
         form.removeEventListener('submit', processForm);
 
         display.toggleCardScreen(form)
-        display.refresh.cardScreen();
         showProject(project.techName)
 
         return
@@ -153,6 +152,46 @@ const createProject = () => {
 
     form.addEventListener('submit', processForm);
 
+}
+
+const removeTask = (source) => {
+    return new Promise((resolve, reject) => {
+        const form = display.form.popUp();
+        display.toggleCardScreen(form);
+
+        const processForm = (e) => {
+            e.preventDefault();
+
+            const responce = e.submitter.value;
+            const buffer = manageTasks.global.read();
+            const allTasks = buffer.tasks;
+            const target = allTasks.find(item => item.techName === source)
+
+            switch (responce) {
+                case 'no':
+                    reject();
+                    break;
+                    case 'yes':
+                        const index = buffer.tasks.indexOf(target);
+                        if (index !== -1) {
+                            buffer.tasks.splice(index, 1);
+                            manageTasks.global.update(buffer);
+    
+                            form.removeEventListener('submit', processForm);
+                            display.toggleCardScreen(form);
+    
+                            display.refresh.main();
+                            updateMain();
+    
+                            resolve();
+                        }
+                    break;
+            }
+        }
+
+        form.addEventListener('submit', processForm);
+
+    }); 
 }
 
 const createTask = () => {
@@ -193,7 +232,7 @@ const createTask = () => {
 const editTask = (source) => {
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
-    const target = allTasks.find(item => item.techName = source);
+    const target = allTasks.find(item => item.techName === source);
 
     return new Promise((resolve) => {
         const form = display.form.edit.task();
@@ -300,6 +339,11 @@ function handleClicks(e) {
         console.log(`clicked on ${target.dataset.role}, ${target.dataset.source}`);
     } else {
         return;
+    }
+
+    if (target.dataset.role === 'delete-button') {
+        const name = target.dataset.source;
+        removeTask(name);
     }
 
     if (target.dataset.role === 'edit-button') {

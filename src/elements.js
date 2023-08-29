@@ -193,10 +193,36 @@ const element = (() => {
             return frame;
         }
 
+        const popUp = () => {
+            const body = document.createElement('form');
+            body.action = 'javascript:void(0)'
+
+            const bodyContent = `
+                <h2 class="form-header">
+                    Are you sure?
+                </h2>
+                <fieldset>
+                    <button type="submit"
+                        value="yes">
+                            Yes
+                    </button>
+                    <button type="submit"
+                        value="no">
+                            No
+                    </button>
+                </fieldset>
+            `;
+
+            body.innerHTML = bodyContent;
+
+            return body;
+        }
+
         return {
             task,
             project,
-            note
+            note,
+            popUp
         }
 
     })();

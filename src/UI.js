@@ -131,9 +131,14 @@ const display = (() => {
             }
         })()
 
+        const popUp = () => {
+            return element.form.popUp();
+        }
+
         return {
             edit,
-            create
+            create,
+            popUp
         }
     })();
 
