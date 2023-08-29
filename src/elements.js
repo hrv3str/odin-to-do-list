@@ -296,12 +296,12 @@ const element = (() => {
                     title="Mark complete">
                 </label>
                 <button data-source="${source}"
-                    data-role="edit-button"
+                    data-role="edit-task"
                     class="control edit"
                     title="Edit task">
                 </button>
                 <button data-source="${source}"
-                    data-role="delete-button"
+                    data-role="delete-task"
                     class="control delete"
                     title="Delete task">
                 </button>
@@ -348,7 +348,7 @@ const element = (() => {
                     <button class="control edit"
                         title="Edit task"
                         data-source="${source}"
-                        data-role="edit-task-button"></button>
+                        data-role="edit-task"></button>
                     <button class="control delete"
                         title="Close"
                         data-role="close-button"
@@ -366,7 +366,9 @@ const element = (() => {
                     <button data-source="${source}"
                         data-role="card-mark-complete"
                         title="Mark complete">
-                            <span class="${checkbox}"></span>
+                            <span class="${checkbox}"
+                                id="checkspan">
+                            </span>
                             Mark complete
                     </button>
                     <button data-role="delete-task"
@@ -419,13 +421,13 @@ const element = (() => {
                 <button class="control edit"
                     title="Edit project"
                     data-source="${source}"
-                    data-role="edit">
+                    data-role="project-edit">
                 </button>
 
                 <button class="control delete"
                     title="Delete project"
                     data-source="${source}"
-                    data-role="delete"></button>
+                    data-role="project-delete"></button>
             `;
 
             labelBody.innerHTML = labelBodyContent;

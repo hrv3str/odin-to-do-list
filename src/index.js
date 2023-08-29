@@ -26,9 +26,6 @@ import {manageTasks} from './taskmanager.js';
         // update(bufferObject),
         // read
 
-import storage from './storagemanager.js';
-//methods: read(), write()
-
 import display from './UI.js';
 //methods:
     //dropdown(name),
@@ -144,7 +141,7 @@ const createProject = () => {
 
         form.removeEventListener('submit', processForm);
 
-        display.toggleCardScreen(form)
+        display.toggleCardScreen()
         showProject(project.techName)
 
         return
@@ -154,9 +151,138 @@ const createProject = () => {
 
 }
 
+const editProject = (source) => {
+    const buffer = manageTasks.global.read()
+    const projects = buffer.projects;
+    const target = projects.find(item => item.techName === source);
+
+    return new Promise((resolve) => {
+        const form = display.form.edit.project();
+        display.toggleCardScreen(form)
+
+        const titleInput = document.getElementById('form-title');
+        titleInput.value = target.name;
+        
+        const processForm = (event) => {
+            event.preventDefault();
+
+            target.name = titleInput.value;
+
+            manageTasks.global.update(buffer);
+
+            const filteredProjects = manageTasks.global.filter.projects();
+
+            display.refresh.projects(filteredProjects);
+
+            console.log('Form processed');
+
+            form.removeEventListener('submit', processForm);
+
+            display.toggleCardScreen()
+            showProject(target.techName)
+            resolve();
+        }
+
+        form.addEventListener('submit', processForm);
+    });
+}
+
+const removeProject = (source) => {
+    if (source) {
+        console.log(`Read source for deleting ${source}`)
+    } else {
+        console.log(`Error cannot read source`);
+        return;
+    }
+
+    const error = 'aborted'
+    
+    return new Promise((resolve, reject) => {
+
+        const buffer = manageTasks.global.read()
+        const projects = buffer.projects;
+        const target = projects.find(item => item.techName === source);
+        const tasks = buffer.tasks;
+        const form = display.form.popUp();
+        const formTitle = form.querySelector('h2.form-header');
+        formTitle.textContent = 'Are you sure? This will remove all linked tasks'
+
+        display.toggleCardScreen(form)
+        
+        const processForm = (e) => {
+            e.preventDefault();
+
+            const responce = e.submitter.value;
+
+            const linkedTasks = target.container;
+
+            if (target) {
+                console.log(`Got target for editing ${target}`)
+            } else {
+                console.log(`Failed to get target for editing`);
+                return
+            }
+
+            console.log(`Got ${responce} as responce`)
+
+            switch (responce) {
+                case 'no':
+                    form.removeEventListener('submit', processForm);
+                    display.toggleCardScreen();
+                    reject(error);
+                    break;
+                    case 'yes':
+                        linkedTasks.forEach(link => {
+                            const task = tasks.find(item => item.techName === link);
+                            const index = tasks.indexOf(task);
+                            if (index !== -1) {
+                                tasks.splice(index, 1);
+                            }
+                        })
+
+                        const index = projects.indexOf(target);
+                        if (index !== -1) {
+                            projects.splice(index, 1);
+                        }
+                        form.removeEventListener('submit', processForm);
+
+                        manageTasks.global.update(buffer);
+
+                        const filteredProjects = manageTasks.global.filter.projects();
+
+                        display.refresh.projects(filteredProjects);
+
+                        console.log('Form processed');
+
+                        display.toggleCardScreen();
+    
+                        display.refresh.main();
+    
+                        resolve();
+                        break;
+            }
+        };
+
+    form.addEventListener('submit', processForm);
+
+    }).catch(error => {
+        console.log('Deleting aborted');
+    });
+};
+
 const removeTask = (source) => {
+    if (source) {
+        console.log(`Read source for deleting ${source}`)
+    } else {
+        console.log(`Error cannot read source`);
+        return;
+    }
+
+    const error = 'aborted'
+
     return new Promise((resolve, reject) => {
         const form = display.form.popUp();
+
         display.toggleCardScreen(form);
 
         const processForm = (e) => {
@@ -167,9 +293,20 @@ const removeTask = (source) => {
             const allTasks = buffer.tasks;
             const target = allTasks.find(item => item.techName === source)
 
+            if (target) {
+                console.log(`Got target for editing ${target}`)
+            } else {
+                console.log(`Failed to get target for editing`);
+                return
+            }
+
+            console.log(`Got ${responce} as responce`)
+
             switch (responce) {
                 case 'no':
-                    reject();
+                    form.removeEventListener('submit', processForm);
+                    display.toggleCardScreen();
+                    reject(error);
                     break;
                     case 'yes':
                         const index = buffer.tasks.indexOf(target);
@@ -178,7 +315,8 @@ const removeTask = (source) => {
                             manageTasks.global.update(buffer);
     
                             form.removeEventListener('submit', processForm);
-                            display.toggleCardScreen(form);
+
+                            display.toggleCardScreen();
     
                             display.refresh.main();
                             updateMain();
@@ -191,6 +329,8 @@ const removeTask = (source) => {
 
         form.addEventListener('submit', processForm);
 
+    }).catch(error => {
+        console.log('Deleting aborted');
     }); 
 }
 
@@ -218,7 +358,7 @@ const createTask = () => {
             manageTasks.global.update(buffer);
 
             form.removeEventListener('submit', processForm);
-            display.toggleCardScreen(form);
+            display.toggleCardScreen();
 
             stringBuffer.get(task.techName);
             resolve();
@@ -230,9 +370,23 @@ const createTask = () => {
 }
 
 const editTask = (source) => {
+    if (source) {
+        console.log(`Read source for editing ${source}`)
+    } else {
+        console.log(`Error cannot read source`);
+        return;
+    }
+
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
     const target = allTasks.find(item => item.techName === source);
+
+    if (target) {
+        console.log(`Got target for editing ${target}`)
+    } else {
+        console.log(`Failed to get target for editing`);
+        return
+    }
 
     return new Promise((resolve) => {
         const form = display.form.edit.task();
@@ -267,7 +421,7 @@ const editTask = (source) => {
             manageTasks.global.update(buffer);
 
             form.removeEventListener('submit', processForm);
-            display.toggleCardScreen(form);
+            display.toggleCardScreen();
 
             display.refresh.main();
             updateMain();
@@ -300,6 +454,7 @@ const toggleCompleteLabel = (source) => {
     const allTasks = buffer.tasks;
     const target = allTasks.find(item => item.techName === source);
     const title = document.querySelector(`[data-role="task-name"][data-source="${source}"]`);
+
     switch (target.isComplete) {
         case true:
             target.isComplete = false;
@@ -313,9 +468,38 @@ const toggleCompleteLabel = (source) => {
     manageTasks.global.update(buffer);
 }
 
+const toggleCompleteCard = (source) => {
+    const buffer = manageTasks.global.read();
+    const allTasks = buffer.tasks;
+    const target = allTasks.find(item => item.techName === source);
+    const title = document.querySelector('div.card-name');
+    const checkbox = document.getElementById('checkspan');
+    const relativeChecbox = document.getElementById(`complete-${source}`);
+    const relativeTitle = document.querySelector(`[data-role="task-name"][data-source="${source}"]`);
+
+    switch (target.isComplete) {
+        case true:
+            target.isComplete = false;
+            title.classList.remove('line-through');
+            relativeTitle.classList.remove('line-through');
+            checkbox.classList.remove('checkbox');
+            checkbox.classList.add('uncheckbox');
+            relativeChecbox.checked = false;
+            break;
+        case false:
+            target.isComplete = true;
+            title.classList.add('line-through');
+            relativeTitle.classList.add('line-through');
+            checkbox.classList.add('checkbox');
+            checkbox.classList.remove('uncheckbox');
+            relativeChecbox.checked = true;
+            break;
+    }
+    manageTasks.global.update(buffer);
+}
+
 const close = () => {
-    const target = cardBuffer.give();
-    display.toggleCardScreen(target)
+    display.toggleCardScreen()
     display.refresh.cardScreen();
 }
 
@@ -341,12 +525,27 @@ function handleClicks(e) {
         return;
     }
 
-    if (target.dataset.role === 'delete-button') {
+    if (target.dataset.role === 'project-delete') {
+        const name = target.dataset.source;
+        removeProject(name);
+    }
+
+    if (target.dataset.role === 'project-edit') {
+        const name = target.dataset.source;
+        editProject(name);
+    }
+
+    if (target.dataset.role === 'card-mark-complete') {
+        const name = target.dataset.source;
+        toggleCompleteCard(name);
+    }
+
+    if (target.dataset.role === 'delete-task') {
         const name = target.dataset.source;
         removeTask(name);
     }
 
-    if (target.dataset.role === 'edit-button') {
+    if (target.dataset.role === 'edit-task') {
         const name = target.dataset.source;
         editTask(name);
     }

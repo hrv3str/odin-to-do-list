@@ -1,4 +1,5 @@
 import { format, startOfWeek, endOfWeek, isWithinInterval, isToday } from 'date-fns';
+import display from './UI';
 
 export const manageTasks = (() => {
 
@@ -7,6 +8,38 @@ export const manageTasks = (() => {
 
     // IIFE to store data, with functions to read, update and filter it
     const global = (() => {
+
+        const storage = (() => {
+            const key = 'ToDoList'
+        
+            const read = () => {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    const parsedData = JSON.parse(data); // Deserialize JSON string to object
+                    update(parsedData); // Update container with parsed data
+                    console.log('loaded from local storage');
+                }
+            }
+        
+            const write = (target) => {
+                const data = JSON.stringify(target);
+                localStorage.setItem(key,data);
+                console.log('saved to local storage')
+            }
+
+            const restore = () => {
+                read();
+                display.refresh.projects(container.projects);
+                document.removeEventListener('DOMContentLoaded', restore);
+            }
+            
+            document.addEventListener('DOMContentLoaded', restore)
+
+            return {
+                read,
+                write
+            }
+        })();
 
         //Declaring the container
         const container = {
@@ -20,6 +53,7 @@ export const manageTasks = (() => {
         // FUnction to update the container
         const update = (buffer) => {
             Object.assign(container, buffer);
+            storage.write(buffer);
             console.log(`${container.type} ${container.techName} is updated`);
         };
 
@@ -304,10 +338,3 @@ export const manageTasks = (() => {
     }
 
 })();
-
-const container = {
-    read: global.read,
-    update: global.update
-}
-
-export default container;

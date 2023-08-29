@@ -77,17 +77,25 @@ const display = (() => {
     }
 
     const toggleCardScreen = (card) => {
-        header.classList.toggle('blur');
-        aside.classList.toggle('blur');
-        main.classList.toggle('blur');
-        footer.classList.toggle('blur');
-        cardScreen.classList.toggle('no-visible');
+        if (card) {
+            header.classList.add('blur');
+            aside.classList.add('blur');
+            main.classList.add('blur');
+            footer.classList.add('blur');
+            cardScreen.classList.remove('no-visible');
 
-        if (!cardScreen.classList.contains('no-visible') && card) {
-            cardScreen.appendChild(card);
-        } else if (card) {
             cardScreen.innerHTML = '';
+            cardScreen.appendChild(card);
+            
+        } else if (!card) {
+            cardScreen.innerHTML = '';
+            header.classList.remove('blur');
+            aside.classList.remove('blur');
+            main.classList.remove('blur');
+            footer.classList.remove('blur');
+            cardScreen.classList.add('no-visible');
         }
+
     }
 
     const form = (() => {
