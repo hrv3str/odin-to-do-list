@@ -62,6 +62,7 @@ const display = (() => {
     }
 
     const dropdown = (source) => {
+        console.log('dropdown - run')
         const nodeList = nodeListHolder.find(node => node.name === source);
 
         collapseAllNenus()
@@ -77,6 +78,7 @@ const display = (() => {
     }
 
     const toggleCardScreen = (card) => {
+        console.log('toggleCardScreen - run')
         if (card) {
             header.classList.add('blur');
             aside.classList.add('blur');
@@ -152,6 +154,7 @@ const display = (() => {
 
     const refresh = (() => {
         const projects = (array) => {
+            console.log('refresh.projects - run')
             const section = nodeListHolder.find (item => item.name === 'projects');
             const container = section.content
             container.innerHTML = '';
@@ -169,11 +172,13 @@ const display = (() => {
         }
 
         const main = () => {
+            console.log('refresh.main - run')
             const main = document.querySelector('div.main');
             removeChildren(main);
         }
 
         const cardScreen = () => {
+            console.log('refresh.cardScreen - run')
             const cardScreen = document.querySelector('div.card-screen');
             removeChildren(cardScreen);
         }
@@ -186,7 +191,17 @@ const display = (() => {
     })()
 
     const show = (() => {
+        const populateFrame = (taskList, frame) => {
+            const container = frame.querySelector('[data-role="main-content"]');
+
+            taskList.forEach(task => {
+                const label = element.task.label(task);
+                container.appendChild(label);
+            })
+        }
+
         const project = (object, inbox) => {
+            console.log('show.project - run')
             const allTasks = [...inbox];
             const linkedTasks = [...object.container];
             const taskObjects = []
@@ -200,27 +215,56 @@ const display = (() => {
             })
 
             const body = element.project.mainFrame(object);
-            const container = body.querySelector(`[data-role="content"]`);
-
-            taskObjects.forEach(object => {
-                const label = element.task.label(object)
-                container.appendChild(label)
-            });
-
             refresh.main();
-
             main.appendChild(body)
+
+            populateFrame(taskObjects, body);
         }
 
         const task = (object) => {
+            console.log('show.task - run')
             const card = element.task.card(object)
             toggleCardScreen(card);
             return card;
         }
 
+        const inbox = (allTasks) => {
+            console.log('show.inbox - run')
+            console.log(`show.inbox - got list ${allTasks}`)
+            const body = element.frames.inbox();
+            console.log('show.inbox - got element')
+            refresh.main();
+            console.log('show.inbox - cleared "main"');
+            main.appendChild(body);
+            console.log('show.inbox - appended frame');
+            populateFrame(allTasks, body);
+            console.log('show.inbox - populated frame')
+        }
+
+        const today = (todayTasks) => {
+            console.log('show.today - run')
+            const body = element.frames.today();
+            refresh.main()
+
+            main.appendChild(body);
+            populateFrame(todayTasks, body);
+            console.log('show.today - stop')
+        }
+
+        const thisWheek = (thisWheekTasks) => {
+            const body = element.frames.thisWheek();
+            refresh.main()
+        
+            main.appendChild(body);
+            populateFrame(thisWheekTasks, body);
+        }
+
         return {
             project,
-            task
+            task,
+            inbox,
+            today,
+            thisWheek
         }
 
     })()

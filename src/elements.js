@@ -454,7 +454,7 @@ const element = (() => {
                             add task
                     </button>
                 </div>
-                <div data-role="content"
+                <div data-role="main-content"
                     data-source="${source}"
                     class="content">
                 </div>
@@ -472,10 +472,88 @@ const element = (() => {
 
     })();
 
+    const frames =(() => {
+        const buildFrame = (title, button) => {
+            const body = document.createElement('div');
+
+            const toSpineCase = (input) => {
+                return input.replace(/\s+/g, '-').toLowerCase();
+            }
+
+            const casedTitle = toSpineCase(title);
+            body.classList.add('main-container');
+
+            let buttonContent = ''
+
+            if (!button) {
+                buttonContent = '';
+            }
+
+            if (button && title !== 'Notes') {
+                buttonContent = `
+                    <button data-role="add-task-button"
+                        data-source="${casedTitle}"
+                        title="Add task">
+                            add task
+                    </button>
+                `;
+            }
+
+            if (button && title === 'Notes') {
+                buttonContent = `
+                    <button data-role="add-note-button"
+                        data-source="${casedTitle}"
+                        title="Add note">
+                            add note
+                    </button>
+                `;
+            }
+
+            const bodyContent = `
+                <div class="main-header">
+                    <h2>
+                        ${title}
+                    </h2>
+                    ${buttonContent}
+                </div>
+                <div data-role="main-content"
+                    data-source="${casedTitle}"
+                    class="content">
+                </div>
+            `;
+
+            body.innerHTML = bodyContent;
+
+            return body //Returns frame
+        }
+
+        const inbox = () => {
+            return buildFrame('Inbox', true);
+        }
+        const today = () => {
+            return buildFrame('Today', false);
+        };
+        const thisWheek = () => {
+            return buildFrame('This wheek', false);
+        };
+        const notes = () => {
+            return buildFrame('Notes', true);
+        };
+
+        return {
+            inbox,
+            today,
+            thisWheek,
+            notes
+        }
+
+    })();
+
     return {
         project,
         task,
-        form
+        form,
+        frames
     }
     
 })();

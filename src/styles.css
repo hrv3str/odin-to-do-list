@@ -72,7 +72,8 @@ button,
 
 .content > button,
 button[data-role="add-button"],
-button[data-role="project-add-button"] {
+button[data-role="project-add-button"],
+button[data-role="add-task-button"] {
     justify-content: flex-end;
     font-family: var(--font-first);
     text-align: right;
@@ -87,7 +88,8 @@ button[data-role="project-add-button"] {
 
 
 button[data-role="add-button"]:before,
-button[data-role="project-add-button"]::before {
+button[data-role="project-add-button"]::before,
+button[data-role="add-task-button"]::before {
     content: '+';
     padding-right: 5px;
 }

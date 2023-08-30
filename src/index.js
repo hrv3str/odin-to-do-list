@@ -72,8 +72,9 @@ const cardBuffer = (() => {
 })();
 
 const mainStateBuffer = (() => {
-    let buffer = '';
+    let buffer = 'inbox';
     const get = (string) => {
+        console.log(`main state ${buffer} buffered`)
         buffer = string;
     }
     const give = () => {
@@ -361,6 +362,7 @@ const createTask = () => {
             display.toggleCardScreen();
 
             stringBuffer.get(task.techName);
+            updateMain();
             resolve();
         }
 
@@ -440,6 +442,32 @@ const showProject = (name) => {
     const target = buffer.projects.find(item => item.techName === name);
     mainStateBuffer.get(name)
     display.show.project(target, allTasks);
+}
+
+const showInbox = () => {
+    console.log('showInbox - run')
+    const list = manageTasks.global.filter.inbox();
+    console.log(`showInbox - list: ${list}`)
+    mainStateBuffer.get('inbox');
+    console.log('showInbox - buffered')
+    display.show.inbox(list);
+    console.log('showInbox - stop')
+}
+
+const showToday = () => {
+    console.log('showToday - run')
+    const list = manageTasks.global.filter.today();
+    mainStateBuffer.get('today');
+    display.show.today(list);
+    console.log('showToday - stop')
+}
+
+const showThisWheek = () => {
+    console.log('showThisWheek - run');
+    const list = manageTasks.global.filter.thisWheek();
+    mainStateBuffer.get('this-wheek');
+    display.show.thisWheek(list);
+    console.log('showThisWheek - stop');
 }
 
 const showTask = (name) => {
@@ -525,6 +553,26 @@ function handleClicks(e) {
         return;
     }
 
+    if (target.dataset.role === "add-task-button") {
+        createTask();
+    }
+
+    if (target.dataset.role === 'label'
+    && target.dataset.source === 'inbox' 
+    || target.dataset.source === 'home') {
+        showInbox();
+    }
+
+    if (target.dataset.role === 'label' 
+    && target.dataset.source === 'today') {
+        showToday();
+    }
+
+    if (target.dataset.role === 'label' 
+    && target.dataset.source === 'this-wheek') {;
+        showThisWheek();
+    }
+
     if (target.dataset.role === 'project-delete') {
         const name = target.dataset.source;
         removeProject(name);
@@ -564,7 +612,8 @@ function handleClicks(e) {
         showTask(name);
     }
 
-    if (target.dataset.role === 'add-button' && target.dataset.source === 'projects') {
+    if (target.dataset.role === 'add-button' 
+    && target.dataset.source === 'projects') {
         createProject();
         return;
     }
@@ -581,10 +630,21 @@ function handleClicks(e) {
         return
     }
 
-    if (target.dataset.role === 'label') {
+    if (target.dataset.role === 'label' 
+    && target.dataset.source !== "inbox"
+    && target.dataset.source !== "today"
+    && target.dataset.source !== "this-wheek") {
         const name = target.dataset.source;
         display.dropdown(name);
     }
 }
+
+const pageStart = () => {
+    console.log('DOM content loaded')
+    showInbox();
+    document.removeEventListener('DOMContentLoaded', pageStart);
+}
+
+document.addEventListener('DOMContentLoaded', pageStart);
 
 document.addEventListener('click', handleClicks);

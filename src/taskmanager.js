@@ -33,13 +33,15 @@ export const manageTasks = (() => {
                 document.removeEventListener('DOMContentLoaded', restore);
             }
             
-            document.addEventListener('DOMContentLoaded', restore)
 
             return {
                 read,
-                write
+                write,
+                restore
             }
         })();
+
+        document.addEventListener('DOMContentLoaded', storage.restore)
 
         //Declaring the container
         const container = {
@@ -91,12 +93,12 @@ export const manageTasks = (() => {
             }
 
             const thisWheek = () => {
-                const result = filterByDueDate(inbox, 7);
+                const result = filterByDueDate(inbox(), 7);
                 return result;
             }
 
             const today = () => {
-                const result = filterByDueDate(inbox, 1);
+                const result = filterByDueDate(inbox(), 1);
                 return result;
             }
 
