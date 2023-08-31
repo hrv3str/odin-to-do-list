@@ -110,7 +110,14 @@ const element = (() => {
             const fieldSet = document.createElement('fieldset');
 
             const fieldContent = `
-                <button type="submit">OK</button>
+                <button type="submit"
+                    value="no">
+                        Cancel
+                </button>
+                <button type="submit"
+                    value="yes">
+                        Save
+                </button>
             `;
 
             fieldSet.innerHTML = fieldContent;
@@ -549,11 +556,99 @@ const element = (() => {
 
     })();
 
+    const note = (() => {
+        const label = (object) => {
+            const title = object.name;
+            const trimName = () => {
+                if (title.length > 10) {
+                    return title.substring(0, 10) + "...";
+                  }
+                  return title;
+            }
+            const description = object.description;
+            const source = object.techName;
+            const body = document.createElement('div');
+            body.classList.add('note-label');
+
+            const bodyContent = `
+                <div class="note-title">
+                    <button data-role="note-name"
+                        data-source="${source}"
+                        title="Show details">
+                            ${trimName()}
+                    </button>
+                    <button class="control edit"
+                        data-role="edit-note"
+                        data-source="${source}"
+                        title="Edit note">
+                    </button>
+                    <button class="control delete"
+                        data-role="delete-note"
+                        data-source="${source}"
+                        title="Delete note">
+                    </button>
+                </div>
+                <p class="note-description">
+                    ${description}
+                </p>
+            `;
+
+            body.innerHTML=bodyContent;
+            return body;
+        }
+
+        const card = (object) => {
+            const source = object.techName;
+            const name = object.name;
+            const desc = object.description;
+
+            const body = document.createElement('div');
+            body.classList.add('card-body');
+            body.dataset.source = source;
+
+            const bodyContent = `
+                <div class="card-header">
+                    <div class="card-name">
+                        ${name}
+                    </div>
+                    <button class="control edit"
+                        title="Edit note"
+                        data-source="${source}"
+                        data-role="edit-note"></button>
+                    <button class="control delete"
+                        title="Close"
+                        data-role="close-button"
+                        data-source="${source}"></button>
+                </div>
+                <div class="card-description">
+                    ${desc}
+                </div>
+                <div class="card-control-section">
+                    <button data-role="delete-note"
+                        data-source="${source}"
+                        title="Delete note">
+                            <span class="delete"></span>
+                            Delete note
+                    </button>
+                </div>
+            `;
+
+            body.innerHTML=bodyContent;
+            return body;
+        } 
+
+        return {
+            label,
+            card
+        }
+    })();
+
     return {
         project,
         task,
         form,
-        frames
+        frames,
+        note
     }
     
 })();

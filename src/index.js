@@ -25,26 +25,6 @@ const stringBuffer = (() => {
     }
 })();
 
-const cardBuffer = (() => {
-    let buffer = null;
-    const get = (item) => {
-        buffer = item;
-    }
-    const give = () => {
-        const output = buffer;
-        buffer = null;
-        return output;
-    }
-    const clear = () => {
-        buffer = null;
-    }
-    return {
-        get,
-        give,
-        clear
-    }
-})();
-
 const mainStateBuffer = (() => {
     let buffer = 'inbox';
     const get = (string) => {
@@ -310,6 +290,73 @@ const removeTask = (source) => {
     }); 
 }
 
+const removeNote = (source) => {
+    console.log('removeNote - start');
+    if (source) {
+        console.log(`Read source for deleting ${source}`)
+    } else {
+        console.log(`Error cannot read source`);
+        return;
+    }
+
+    const error = 'aborted'
+
+    return new Promise((resolve, reject) => {
+        const form = display.form.popUp();
+
+        display.toggleCardScreen(form);
+
+        const processForm = (e) => {
+            e.preventDefault();
+
+            const responce = e.submitter.value;
+            const buffer = manageTasks.global.read();
+            const allNotes = buffer.notes;
+            const target = allNotes.find(item => item.techName === source)
+
+            if (target) {
+                console.log(`Got target for removing ${target}`)
+            } else {
+                console.log(`Failed to get target for removing`);
+                return
+            }
+
+            console.log(`Got ${responce} as responce`)
+
+            switch (responce) {
+                case 'no':
+                    form.removeEventListener('submit', processForm);
+                    display.toggleCardScreen();
+                    reject(error);
+                    break;
+                    case 'yes':
+                        const index = buffer.notes.indexOf(target);
+                        if (index !== -1) {
+                            buffer.notes.splice(index, 1);
+                            manageTasks.global.update(buffer);
+    
+                            form.removeEventListener('submit', processForm);
+
+                            display.toggleCardScreen();
+    
+                            display.refresh.main();
+                            display.refresh.notesCounter(buffer.notes)
+                            updateMain();
+                            
+                            console.log('removeNote - stop')
+                            resolve();
+                        }
+                    break;
+            }
+        }
+
+        form.addEventListener('submit', processForm);
+
+    }).catch(error => {
+        console.log('Deleting aborted');
+    }); 
+}
+
 const createTask = () => {
     return new Promise((resolve) => {
         const form = display.form.create.task();
@@ -349,7 +396,103 @@ const createTask = () => {
     });  
 }
 
+const createNote = () => {
+    return new Promise((resolve) => {
+        const form = display.form.create.note();
+        display.toggleCardScreen(form);
+
+        const processForm = (event) => {
+            event.preventDefault()
+            const nameInput = document.getElementById('form-title');
+            const descInput = document.getElementById('form-description');
+
+            const name = nameInput.value;
+            const desc = descInput.value;
+
+            const note = manageTasks.create.note(name, desc);
+
+            const buffer = manageTasks.global.read();
+            buffer.notes.push(note);
+            manageTasks.global.update(buffer);
+
+            form.removeEventListener('submit', processForm);
+            display.toggleCardScreen();
+
+            display.refresh.notesCounter(buffer.notes);
+            updateMain();
+            resolve();
+        }
+
+        form.addEventListener('submit', processForm);
+
+    });  
+}
+
+const editNote = (source) => {
+    console.log('editNote - run')
+    if (source) {
+        console.log(`Read source for editing ${source}`)
+    } else {
+        console.log(`Error cannot read source`);
+        return;
+    }
+
+    const buffer = manageTasks.global.read();
+    const allNotes = buffer.notes;
+    const target = allNotes.find(item => item.techName === source);
+
+    if (target) {
+        console.log(`Got target for editing ${target}`)
+    } else {
+        console.log(`Failed to get target for editing`);
+        return
+    }
+
+    return new Promise((resolve, reject) => {
+        const form = display.form.edit.note();
+        display.toggleCardScreen(form);
+
+        const nameInput = document.getElementById('form-title');
+        const descInput = document.getElementById('form-description');
+
+        nameInput.value = target.name;
+        descInput.value = target.description;
+
+        const processForm = (event) => {
+            event.preventDefault()
+            const responce = event.submitter.value;
+
+            if (responce === 'no') {
+                display.refresh.cardScreen();
+                display.toggleCardScreen();
+                reject();
+                return;
+            }
+            
+            target.name = nameInput.value;
+            target.description = descInput.value;
+
+            manageTasks.global.update(buffer);
+
+            form.removeEventListener('submit', processForm);
+            display.toggleCardScreen();
+
+            display.refresh.main();
+            updateMain();
+
+            console.log('editNote - stop')
+            resolve();
+        }
+
+        form.addEventListener('submit', processForm);
+
+    }).catch(error => {
+        console.log('Editing cancelled');
+    });  
+}
+
 const editTask = (source) => {
+    console.log('editTask - run')
     if (source) {
         console.log(`Read source for editing ${source}`)
     } else {
@@ -368,28 +511,31 @@ const editTask = (source) => {
         return
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const form = display.form.edit.task();
         display.toggleCardScreen(form);
 
         const nameInput = document.getElementById('form-title');
         const descInput = document.getElementById('form-description');
         const dueDateInput = document.getElementById('form-date')
+        const priority = target.priority;
+        const radio = document.querySelector(`[value=${priority}]`);
+        radio.checked = true;
 
         nameInput.value = target.name;
         descInput.value = target.description;
-
-        const radio = document.querySelector(`[name="priority"][value="${target.priority}"]`);
-        if (!radio.checked) {
-            radio.checked = true;
-        } else {
-            return;
-        }
-
-        dueDateInput.value = target.noFormatDate;
+        dueDateInput.value = target.noFormatDate
 
         const processForm = (event) => {
             event.preventDefault()
+            const responce = event.submitter.value;
+
+            if (responce === 'no') {
+                display.refresh.cardScreen();
+                display.toggleCardScreen();
+                reject();
+                return;
+            }
 
             const priorRadioChecked = document.querySelector('input[name="priority"]:checked');
             
@@ -405,12 +551,15 @@ const editTask = (source) => {
 
             display.refresh.main();
             updateMain();
+            console.log('editTask - stop')
 
             resolve();
         }
 
         form.addEventListener('submit', processForm);
 
+    }).catch(error => {
+        console.log('Editing cancelled');
     });  
 }
 
@@ -451,8 +600,21 @@ const showThisWheek = () => {
 const showTask = (name) => {
     const buffer = manageTasks.global.read();
     const target = buffer.tasks.find(item => item.techName === name);
-    const card = display.show.task(target);
-    cardBuffer.get(card);
+    display.show.task(target);
+}
+
+const showNote = (name) => {
+    const buffer = manageTasks.global.read();
+    const target = buffer.notes.find(item => item.techName === name);
+    display.show.note(target);
+}
+
+const showNotes = () => {
+    console.log('showNotes - run');
+    const list = manageTasks.global.filter.notes();
+    mainStateBuffer.get('notes');
+    display.show.notes(list);
+    console.log('showNotes - stop');
 }
 
 const toggleCompleteLabel = (source) => {
@@ -507,6 +669,7 @@ const toggleCompleteCard = (source) => {
 const close = () => {
     display.toggleCardScreen()
     display.refresh.cardScreen();
+    updateMain();
 }
 
 const addTaskToProject = (name) => {
@@ -531,6 +694,25 @@ function handleClicks(e) {
         return;
     }
 
+    if (target.dataset.role === 'delete-note') {
+        const name = target.dataset.source;
+        removeNote(name);
+    }
+
+    if (target.dataset.role === 'edit-note') {
+        const name = target.dataset.source;
+        editNote(name);
+    }
+
+    if (target.dataset.role === 'note-name') {
+        const name = target.dataset.source;
+        showNote(name);
+    }
+
+    if (target.dataset.role === 'add-note-button') {
+        createNote();
+    }
+
     if (target.dataset.role === "add-task-button") {
         createTask();
     }
@@ -549,6 +731,11 @@ function handleClicks(e) {
     if (target.dataset.role === 'label' 
     && target.dataset.source === 'this-wheek') {;
         showThisWheek();
+    }
+
+    if (target.dataset.role === 'label'
+    && target.dataset.source === 'notes') {
+        showNotes();
     }
 
     if (target.dataset.role === 'project-delete') {

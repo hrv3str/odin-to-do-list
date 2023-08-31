@@ -18,6 +18,7 @@ body {
     grid-template-rows: 10vh 83vh 7vh;
     color: var(--col-fourth);
     font-family: var(--font-second);
+    overflow: hidden;
 }
 
 /* header section */
@@ -73,7 +74,8 @@ button,
 .content > button,
 button[data-role="add-button"],
 button[data-role="project-add-button"],
-button[data-role="add-task-button"] {
+button[data-role="add-task-button"],
+button[data-role="add-note-button"] {
     justify-content: flex-end;
     font-family: var(--font-first);
     text-align: right;
@@ -89,13 +91,15 @@ button[data-role="add-task-button"] {
 
 button[data-role="add-button"]:before,
 button[data-role="project-add-button"]::before,
-button[data-role="add-task-button"]::before {
+button[data-role="add-task-button"]::before,
+button[data-role="add-note-button"]::before {
     content: '+';
     padding-right: 5px;
 }
 
 button:hover,
-.mock-checkbox:hover {
+.mock-checkbox:hover,
+button[data-role="note-name"]:hover {
     cursor: pointer;
     border: 1px solid var(--col-third);
     box-shadow: 0 0 3px var(--col-fourth);
@@ -168,11 +172,29 @@ button:hover,
 }
 
 /* main section */
+.notes-holder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    max-height: 100%;
+    min-height: fit-content;
+    overflow-y: scroll;
+    padding-bottom: calc(1.1rem + 5px);
+}
+
+.notes-holder::-webkit-scrollbar {
+    width: 5px;
+}
+
 .main-container {
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 5px;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 1rem;
 }
 
@@ -199,6 +221,7 @@ button:hover,
     grid-row: 2 / 3;
     background-color: var(--col-fourth);
     color: var(--col-first);
+    overflow: hidden;
 }
 
 /* task label styles */
@@ -464,6 +487,60 @@ textarea {
 
 .uncheckbox {
     background-image: url(./checkbox-blank-outline.svg);
+}
+
+/* note classes */
+.note-label {
+    background-color: var(--col-first);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.note-title {
+    background: linear-gradient(
+        135deg,
+        var(--col-second),
+        var(--col-first)
+    );
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px 0px;
+    display: flex;
+    flex-direction: row;
+    color: var(--col-fourth);
+    width: calc(100% / 3);
+    min-width: 15rem;
+    align-items: center;
+    height: fit-content;
+}
+
+.note-title > .edit {
+    margin-left: auto;
+}
+
+.note-description {
+    font-family: var(--font-second);
+    color: var(--col-fourth);
+    font-size: 1.1rem;
+    text-overflow: ellipsis;
+    margin: 5px 0;
+    white-space: wrap;     
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    width: 15rem;
+    height: 10rem;
+}
+
+button[data-role="note-name"] {
+    padding: 2px 5px;
+    padding-bottom: 4px;
+    margin: 0;
+    font-family: var(--font-first);
+    border: 1px solid transparent;
+    background-color: transparent;
+    width: fit-content;
+    font-weight: 500;
+    font-size: 1.5rem;
 }
 
 /* functional classes */

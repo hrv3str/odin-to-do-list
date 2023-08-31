@@ -220,6 +220,15 @@ const display = (() => {
             })
         }
 
+        const populateNotesFrame = (taskList, frame) => {
+            const container = frame.querySelector('[data-role="main-content"]');
+
+            taskList.forEach(note => {
+                const label = element.note.label(note);
+                container.appendChild(label);
+            })
+        }
+
         const project = (object, inbox) => {
             console.log('show.project - run')
             const allTasks = [...inbox];
@@ -245,7 +254,6 @@ const display = (() => {
             console.log('show.task - run')
             const card = element.task.card(object)
             toggleCardScreen(card);
-            return card;
         }
 
         const inbox = (allTasks) => {
@@ -279,12 +287,34 @@ const display = (() => {
             populateFrame(thisWheekTasks, body);
         }
 
+        const notes = (notes) => {
+            console.log('display.show.notes - run');
+            const body = element.frames.notes();
+
+            refresh.main();
+            main.appendChild(body);
+            populateNotesFrame(notes, body);
+            const content = document.querySelector('[data-role="main-content"]')
+            content.classList.remove('content');
+            content.classList.add('notes-holder');
+            console.log('display.show.notes - stop');
+        }
+
+        const note = (object) => {
+            console.log('display.show.note - run');
+            const card = element.note.card(object);
+            toggleCardScreen(card);
+            console.log('display.show.note - stop')
+        }
+
         return {
             project,
             task,
             inbox,
             today,
-            thisWheek
+            thisWheek,
+            notes,
+            note
         }
 
     })()
