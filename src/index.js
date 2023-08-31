@@ -2,34 +2,8 @@ import 'normalize.css';
 import './styles.css';
 
 import {manageTasks} from './taskmanager.js';
-//methods:
-    // create:
-        // task(name, description, dueDate, priority),
-        // note(name, description),
-        // project(name)
-
-    // store(object),
-    // remove(techName),
-    // update(techName, sourceObject),
-    // locate(techName),
-    // linkToProject(techName, object),
-    // getProjectList(techName)
-
-    // global:
-        // filter:
-            // inbox,
-            // today,
-            // thisWheek,
-            // projects,
-            // notes
-
-        // update(bufferObject),
-        // read
 
 import display from './UI.js';
-//methods:
-    //dropdown(name),
-    //toggleCardScreen()
 
 const stringBuffer = (() => {
     let buffer = '';
@@ -320,6 +294,7 @@ const removeTask = (source) => {
                             display.toggleCardScreen();
     
                             display.refresh.main();
+                            display.refresh.homeCounter(buffer.tasks)
                             updateMain();
     
                             resolve();
@@ -339,6 +314,8 @@ const createTask = () => {
     return new Promise((resolve) => {
         const form = display.form.create.task();
         display.toggleCardScreen(form);
+        const radio = document.getElementById('priority-normal');
+        radio.checked = true;
 
         const processForm = (event) => {
             event.preventDefault()
@@ -362,6 +339,7 @@ const createTask = () => {
             display.toggleCardScreen();
 
             stringBuffer.get(task.techName);
+            display.refresh.homeCounter(buffer.tasks);
             updateMain();
             resolve();
         }
@@ -642,6 +620,10 @@ function handleClicks(e) {
 const pageStart = () => {
     console.log('DOM content loaded')
     showInbox();
+    const buffer = manageTasks.global.read()
+    display.refresh.projects(buffer.projects);
+    display.refresh.homeCounter(buffer.tasks);
+    display.refresh.notesCounter(buffer.notes);
     document.removeEventListener('DOMContentLoaded', pageStart);
 }
 

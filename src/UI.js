@@ -154,7 +154,7 @@ const display = (() => {
 
     const refresh = (() => {
         const projects = (array) => {
-            console.log('refresh.projects - run')
+            console.log('display.refresh.projects - run')
             const section = nodeListHolder.find (item => item.name === 'projects');
             const container = section.content
             container.innerHTML = '';
@@ -172,21 +172,41 @@ const display = (() => {
         }
 
         const main = () => {
-            console.log('refresh.main - run')
+            console.log('display.refresh.main - run');
             const main = document.querySelector('div.main');
             removeChildren(main);
+            console.log('display.refresh.main - stop')
         }
 
         const cardScreen = () => {
-            console.log('refresh.cardScreen - run')
+            console.log('display.refresh.cardScreen - run')
             const cardScreen = document.querySelector('div.card-screen');
             removeChildren(cardScreen);
+            console.log('display.refresh.cardScreen - stop')
+        }
+
+        const homeCounter = (array) => {
+            console.log('display.refresh.homeCounter - run')
+            const counter = nodeHome.counter;
+            const count = array.length;
+            counter.textContent = count;
+            console.log(`display.refresh.homeCounter - stop. Count is ${count}.`)
+        }
+
+        const notesCounter = (array) => {
+            console.log('display.refresh.notesCounter - run')
+            const counter = nodeNotes.counter;
+            const count = array.length;
+            counter.textContent = count;
+            console.log(`display.refresh.notesCounter - stop. Count is ${count}.`)
         }
 
         return {
             projects,
             main,
-            cardScreen
+            cardScreen,
+            homeCounter,
+            notesCounter
         }
     })()
 

@@ -70,7 +70,7 @@ const element = (() => {
                     name="priority"
                     id="priority-normal"
                     value="normal"
-                    checked>
+                    >
                 <label for="priority-normal"
                     class="mock-radio">
                     Normal
