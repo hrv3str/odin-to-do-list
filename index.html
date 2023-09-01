@@ -1,0 +1,104 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoList</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Marcellus&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg"><script defer src="main.js"></script></head>
+<body>
+    <!-- header section -->
+    <div class="header">
+        <span class="logo"></span>
+        <h1>ToDoList</h1>
+    </div>
+    <!-- aside section -->
+    <div class="aside">
+        <!-- 'home' part -->
+        <button data-source="home"
+            data-role="label">
+                Home
+                <div class="counter no-visible"
+                    data-source="home"
+                    data-role="counter">
+                    0
+                </div>
+        </button>
+        <div class="menu expand"
+            data-source="home"
+            data-role="dropdown">
+            <div class="content"
+                data-source="home"
+                data-role="content">
+                <button data-source="inbox"
+                    data-role="label">
+                        Inbox
+                </button>
+                <button data-source="today"
+                    data-role="label">
+                        Today
+                </button>
+                <button data-source="this-wheek"
+                    data-role="label">
+                        This Wheek
+                </button>
+            </div>
+        </div>
+        <!-- 'projects part' -->
+        <button data-source="projects"
+            data-role="label">
+                Projects
+                <div class="counter"
+                    data-source="projects"
+                    data-role="counter">
+                    0
+                </div>
+        </button>
+        <div class="menu no-visible"
+            data-source="projects"
+            data-role="dropdown">
+            <button data-source="projects"
+                data-role="add-button"
+                >
+                add project
+            </button>
+            <div class="content"
+                data-source="projects"
+                data-role="content">
+
+            </div>
+        </div>
+        <!-- 'notes' part -->
+        <button data-source="notes"
+            data-role="label">
+                Notes
+                <div class="counter"
+                    data-source="notes"
+                    data-role="counter">
+                    0
+                </div>
+        </button>
+    </div>
+    <!-- main-section -->
+    <div class="main">
+            <div class="note-label"></div>
+    </div>
+    <!-- footer section -->
+    <div class="footer">
+        2023 coded by 
+        <a href="https://github.com/hrv3str"
+            target="_blank">
+            hrvstr
+            <span class="git-logo">
+            </span>
+        </a>
+    </div>
+    <!-- card-screen section -->
+    <div class="card-screen no-visible">
+        
+    </div>
+</body>
+</html>
