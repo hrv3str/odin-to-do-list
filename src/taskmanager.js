@@ -70,20 +70,42 @@ export const manageTasks = (() => {
         //IIFE containing filtering methods
         const filter = (() => {
             const filterByDueDate = (array, days) => {
-                if (array.length < 0) {
-                    return;
+
+                const today = new Date()
+                const currentDayOfWeek = today.getDay();
+                const weekStart = new Date(today);
+                const weekEnd = new Date(today);
+                const result = [];
+
+                if (days === 1) {
+                    array.forEach(item => {
+                        const itemDate = new Date(item.noFormatDate);
+                        if (itemDate.toDateString() === today.toDateString()) {
+                            result.push(item);
+                        }
+                    });
                 }
-                const currentDate = new Date();
-                const filteredItems = array.filter(item => {
-                  if (!item.dueDate) return false;
-                  
-                  const dueDate = new Date(item.dueDate);
-                  const isInRange = days === 1 ? isToday(dueDate) : isWithinInterval(dueDate, { start: currentDate, end: new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000)) });
-                  
-                  return isInRange;
-                });
+
+                if (days === 7) {
+                    const calculateMonday = () => {
+                        return today.getDate() - currentDayOfWeek + (currentDayOfWeek === 0 ? -6 : 1);
+                    }
+                    weekStart.setDate(calculateMonday());
+
+                    const calculateSunday = () => {
+                        return today.getDate() + (7 - currentDayOfWeek);
+                    }
+                    weekEnd.setDate(calculateSunday());
+
+                    array.forEach(item => {
+                        const itemDate = new Date(item.noFormatDate);
+                        if (itemDate >= weekStart && itemDate <= weekEnd) {
+                            result.push(item);
+                        }
+                    });
+                }
               
-                return filteredItems;
+                return result;
               };
             
             // Ouput values
@@ -160,9 +182,9 @@ export const manageTasks = (() => {
                 name: name,
                 techName: utylize(name),
                 description: description,
-                noFormatDate: dateInput,
+                noFormatDate: new Date(dateInput),
                 get dueDate() {
-                   return format(new Date(this.noFormatDate),'dd-MM-yyyy')
+                   return format(this.noFormatDate,'dd-MM-yyyy')
                 },
                 priority: priority,
                 isComplete: false
