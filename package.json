@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "npx webpack serve",
-    "deploy-demo": "git push origin :gh-pages && git subtree push --prefix dist origin gh-pages",
+    "deploy-demo": "git subtree push --prefix dist origin gh-pages",
     "build": "webpack --config webpack.config.js",
     "config": "code webpack.config.js",
     "watch": "webpack --watch"
