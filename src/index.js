@@ -5,7 +5,7 @@ import {manageTasks} from './taskmanager.js';
 
 import display from './UI.js';
 
-const stringBuffer = (() => {
+const stringBuffer = (() => { //buffer function to contain strings
     let buffer = '';
     const get = (string) => {
         buffer = string;
@@ -25,7 +25,7 @@ const stringBuffer = (() => {
     }
 })();
 
-const mainStateBuffer = (() => {
+const mainStateBuffer = (() => { //Buffer function to contain state of 'main' div
     let buffer = 'inbox';
     const get = (string) => {
         console.log(`main state ${buffer} buffered`)
@@ -46,7 +46,7 @@ const mainStateBuffer = (() => {
     }
 })();
 
-const updateMain = () => {
+const updateMain = () => { //function to refresh state of 'main' div
     const type = mainStateBuffer.give()
     switch (type) {
         case 'inbox':
@@ -70,48 +70,72 @@ const updateMain = () => {
     }
 }
 
-const createProject = () => {
+const createProject = () => { //function to habndle project creation
+    console.log('createProject - run');
     const form = display.form.create.project();
     display.toggleCardScreen(form)
 
-    const titleInput = document.getElementById('form-title');
-    
-    const processForm = (event) => {
-        event.preventDefault();
+    return new Promise((resolve, reject)=>{
 
-        const title = titleInput.value;
+        const titleInput = document.getElementById('form-title');
 
-        const project = manageTasks.create.project(title);
-        const buffer = manageTasks.global.read();
-        buffer.projects.push(project);
-        manageTasks.global.update(buffer);
+        const cancelButton = document.querySelector('button[value="no"]');
 
-        const filteredProjects = manageTasks.global.filter.projects();
-        console.log(filteredProjects);
+        const cancel = () => {
+            cancelButton.removeEventListener('click', cancel);
+            form.removeEventListener('submit', processForm);
+            display.refresh.cardScreen();
+            display.toggleCardScreen();
+            reject();
+            return;
+        }
+        
+        const processForm = (event) => {
+            event.preventDefault();
+            const responce = event.submitter.value
+            if (responce === 'no') {
+                cancel()
+            }
 
-        display.refresh.projects(filteredProjects);
+            const title = titleInput.value;
 
-        console.log('Form processed');
-        console.log(manageTasks.global.read())
+            const project = manageTasks.create.project(title);
+            const buffer = manageTasks.global.read();
+            buffer.projects.push(project);
+            manageTasks.global.update(buffer);
 
-        form.removeEventListener('submit', processForm);
+            const filteredProjects = manageTasks.global.filter.projects();
+            console.log(filteredProjects);
 
-        display.toggleCardScreen()
-        showProject(project.techName)
+            display.refresh.projects(filteredProjects);
 
-        return
-    }
+            console.log('Form processed');
+            console.log(manageTasks.global.read())
 
-    form.addEventListener('submit', processForm);
+            form.removeEventListener('submit', processForm);
+            cancelButton.removeEventListener('click', cancel)
 
+            display.toggleCardScreen()
+            showProject(project.techName)
+            resolve();
+            console.log('createProject - stop');
+            return
+        }
+
+        form.addEventListener('submit', processForm);
+        cancelButton.addEventListener('click', cancel);
+    }).catch((error)=>{
+        console.log('Canceled project creation')
+    });
 }
 
-const editProject = (source) => {
+const editProject = (source) => { //function to handle project editing
+    console.log('editProject - run')
     const buffer = manageTasks.global.read()
     const projects = buffer.projects;
     const target = projects.find(item => item.techName === source);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const form = display.form.edit.project();
         display.toggleCardScreen(form)
 
@@ -120,6 +144,13 @@ const editProject = (source) => {
         
         const processForm = (event) => {
             event.preventDefault();
+            const responce = event.submitter.vlaue;
+            if (responce === 'no') {
+                display.refresh.cardScreen();
+                display.toggleCardScreen();
+                reject();
+                return;
+            }
 
             target.name = titleInput.value;
 
@@ -136,13 +167,17 @@ const editProject = (source) => {
             display.toggleCardScreen()
             showProject(target.techName)
             resolve();
+            console.log('editProject - stop');
+            return;
         }
 
         form.addEventListener('submit', processForm);
-    });
+    }).catch((error)=>{
+        console.log('Project editing cancelled');
+    })
 }
 
-const removeProject = (source) => {
+const removeProject = (source) => { //Function to handle project removal
     if (source) {
         console.log(`Read source for deleting ${source}`)
     } else {
@@ -225,7 +260,7 @@ const removeProject = (source) => {
     });
 };
 
-const removeTask = (source) => {
+const removeTask = (source) => { // Handles task removal
     if (source) {
         console.log(`Read source for deleting ${source}`)
     } else {
@@ -290,7 +325,7 @@ const removeTask = (source) => {
     }); 
 }
 
-const removeNote = (source) => {
+const removeNote = (source) => { //Handles note removal
     console.log('removeNote - start');
     if (source) {
         console.log(`Read source for deleting ${source}`)
@@ -357,19 +392,38 @@ const removeNote = (source) => {
     }); 
 }
 
-const createTask = () => {
-    return new Promise((resolve) => {
+const createTask = () => { //Handles task creation
+    console.log('createTask - run')
+    return new Promise((resolve, reject) => {
         const form = display.form.create.task();
         display.toggleCardScreen(form);
         const radio = document.getElementById('priority-normal');
         radio.checked = true;
 
+        const today = new Date();
+        const dueDateInput = document.getElementById('form-date');
+        dueDateInput.value = today;
+        const cancelButton = document.querySelector('button[value="no"]');
+
+        const cancel = () => {
+            cancelButton.removeEventListener('click', cancel);
+            form.removeEventListener('submit', processForm);
+            display.refresh.cardScreen();
+            display.toggleCardScreen();
+            reject();
+            return;
+        }
+
         const processForm = (event) => {
             event.preventDefault()
+            const responce = event.submitter.value;
+            if (responce === 'no') {
+                cancel();
+            }
+
             const nameInput = document.getElementById('form-title');
             const descInput = document.getElementById('form-description');
             const priorInput = document.querySelector('input[name="priority"]:checked');
-            const dueDateInput = document.getElementById('form-date')
 
             const name = nameInput.value;
             const desc = descInput.value;
@@ -383,26 +437,49 @@ const createTask = () => {
             manageTasks.global.update(buffer);
 
             form.removeEventListener('submit', processForm);
+            cancelButton.removeEventListener('click', cancel)
             display.toggleCardScreen();
 
             stringBuffer.get(task.techName);
             display.refresh.homeCounter(buffer.tasks);
             updateMain();
             resolve();
+            console.log('createTask - stop')
+            return;
         }
 
         form.addEventListener('submit', processForm);
+        cancelButton.addEventListener('click', cancel);
 
-    });  
+    }).catch((error) => {
+        console.log('Task creatiion cancelled')
+    })
 }
 
-const createNote = () => {
-    return new Promise((resolve) => {
+const createNote = () => { //Handles note creation
+    console.log('createNote - start')
+    return new Promise((resolve, reject) => {
         const form = display.form.create.note();
         display.toggleCardScreen(form);
 
+        const cancelButton = document.querySelector('button[value="no"]');
+
+        const cancel = () => {
+            cancelButton.removeEventListener('click', cancel);
+            form.removeEventListener('submit', processForm);
+            display.refresh.cardScreen();
+            display.toggleCardScreen();
+            reject();
+            return;
+        }
+
         const processForm = (event) => {
             event.preventDefault()
+            const responce = event.submitter.value;
+            if (responce === 'no') {
+                cancel()
+            }
+
             const nameInput = document.getElementById('form-title');
             const descInput = document.getElementById('form-description');
 
@@ -416,19 +493,25 @@ const createNote = () => {
             manageTasks.global.update(buffer);
 
             form.removeEventListener('submit', processForm);
+            cancelButton.removeEventListener('click', cancel);
             display.toggleCardScreen();
 
             display.refresh.notesCounter(buffer.notes);
             updateMain();
             resolve();
+            console.log('createNote - stop');
+            return;
         }
 
         form.addEventListener('submit', processForm);
+        cancelButton.addEventListener('click', cancel);
 
-    });  
+    }).catch((error) => {
+        console.log('Note creation cancelled')
+    })
 }
 
-const editNote = (source) => {
+const editNote = (source) => { //Handles note editing
     console.log('editNote - run')
     if (source) {
         console.log(`Read source for editing ${source}`)
@@ -491,7 +574,7 @@ const editNote = (source) => {
     });  
 }
 
-const editTask = (source) => {
+const editTask = (source) => { //Handles task editing
     console.log('editTask - run')
     if (source) {
         console.log(`Read source for editing ${source}`)
@@ -563,7 +646,7 @@ const editTask = (source) => {
     });  
 }
 
-const showProject = (name) => {
+const showProject = (name) => { //shows project in 'main' div
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
     const target = buffer.projects.find(item => item.techName === name);
@@ -571,7 +654,7 @@ const showProject = (name) => {
     display.show.project(target, allTasks);
 }
 
-const showInbox = () => {
+const showInbox = () => { //shows 'inbox' section in 'main' div
     console.log('showInbox - run')
     const list = manageTasks.global.filter.inbox();
     console.log(`showInbox - list: ${list}`)
@@ -581,7 +664,7 @@ const showInbox = () => {
     console.log('showInbox - stop')
 }
 
-const showToday = () => {
+const showToday = () => { //shows 'today' section in 'main' div
     console.log('showToday - run')
     const list = manageTasks.global.filter.today();
     mainStateBuffer.get('today');
@@ -589,7 +672,7 @@ const showToday = () => {
     console.log('showToday - stop')
 }
 
-const showThisWheek = () => {
+const showThisWheek = () => { //shows 'this wheek' section in 'main' div
     console.log('showThisWheek - run');
     const list = manageTasks.global.filter.thisWheek();
     mainStateBuffer.get('this-wheek');
@@ -597,19 +680,19 @@ const showThisWheek = () => {
     console.log('showThisWheek - stop');
 }
 
-const showTask = (name) => {
+const showTask = (name) => { //shows task card
     const buffer = manageTasks.global.read();
     const target = buffer.tasks.find(item => item.techName === name);
     display.show.task(target);
 }
 
-const showNote = (name) => {
+const showNote = (name) => { //shows note card
     const buffer = manageTasks.global.read();
     const target = buffer.notes.find(item => item.techName === name);
     display.show.note(target);
 }
 
-const showNotes = () => {
+const showNotes = () => { //shows 'notes' section in 'main' div
     console.log('showNotes - run');
     const list = manageTasks.global.filter.notes();
     mainStateBuffer.get('notes');
@@ -617,7 +700,7 @@ const showNotes = () => {
     console.log('showNotes - stop');
 }
 
-const toggleCompleteLabel = (source) => {
+const toggleCompleteLabel = (source) => { //handles 'complete' state toggling in the 'main' div
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
     const target = allTasks.find(item => item.techName === source);
@@ -636,7 +719,7 @@ const toggleCompleteLabel = (source) => {
     manageTasks.global.update(buffer);
 }
 
-const toggleCompleteCard = (source) => {
+const toggleCompleteCard = (source) => { //handles 'complete' toggling in task card
     const buffer = manageTasks.global.read();
     const allTasks = buffer.tasks;
     const target = allTasks.find(item => item.techName === source);
@@ -666,13 +749,13 @@ const toggleCompleteCard = (source) => {
     manageTasks.global.update(buffer);
 }
 
-const close = () => {
+const close = () => { //handles card view closing
     display.toggleCardScreen()
     display.refresh.cardScreen();
     updateMain();
 }
 
-const addTaskToProject = (name) => {
+const addTaskToProject = (name) => { //handles linking tasks to project
     const buffer = manageTasks.global.read();
     
     createTask().then(() => {
@@ -682,119 +765,143 @@ const addTaskToProject = (name) => {
 
         project.container.push(task);
         showProject(name);
+    }).catch((error) => {
+        console.log('Task creation was cancelled, cannot link task')
     });
 }
 
-function handleClicks(e) {
+function handleClicks(e) { //handles mouse input
     const target = e.target;
 
+    // if target elemen don't havve data attributes - breaks
     if (target.dataset.role && target.dataset.source) {
         console.log(`clicked on ${target.dataset.role}, ${target.dataset.source}`);
     } else {
         return;
     }
 
+    //calls note removal
     if (target.dataset.role === 'delete-note') {
         const name = target.dataset.source;
         removeNote(name);
     }
 
+    //calls note editing
     if (target.dataset.role === 'edit-note') {
         const name = target.dataset.source;
         editNote(name);
     }
 
+    //calls note card
     if (target.dataset.role === 'note-name') {
         const name = target.dataset.source;
         showNote(name);
     }
 
+    //calls note creation
     if (target.dataset.role === 'add-note-button') {
         createNote();
     }
 
+    //calls task creation
     if (target.dataset.role === "add-task-button") {
         createTask();
     }
 
+    //calls 'inbox' screen
     if (target.dataset.role === 'label'
     && target.dataset.source === 'inbox' 
     || target.dataset.source === 'home') {
         showInbox();
     }
 
+    //calls 'today' screen
     if (target.dataset.role === 'label' 
     && target.dataset.source === 'today') {
         showToday();
     }
 
+    //calls 'this wheek' screen
     if (target.dataset.role === 'label' 
     && target.dataset.source === 'this-wheek') {;
         showThisWheek();
     }
 
+    //calls 'notes' screen
     if (target.dataset.role === 'label'
     && target.dataset.source === 'notes') {
         showNotes();
     }
 
+    //calls project removal
     if (target.dataset.role === 'project-delete') {
         const name = target.dataset.source;
         removeProject(name);
     }
 
+    //calls project editing
     if (target.dataset.role === 'project-edit') {
         const name = target.dataset.source;
         editProject(name);
     }
 
+    //calls 'complete' toggling
     if (target.dataset.role === 'card-mark-complete') {
         const name = target.dataset.source;
         toggleCompleteCard(name);
     }
 
+    //calls task removal
     if (target.dataset.role === 'delete-task') {
         const name = target.dataset.source;
         removeTask(name);
     }
 
+    //calls task edition
     if (target.dataset.role === 'edit-task') {
         const name = target.dataset.source;
         editTask(name);
     }
 
+    //calls 'complete' toggling
     if (target.dataset.role === 'mark-complete-button') {
         const name = target.dataset.source;
         toggleCompleteLabel(name);
     }
 
+    //closes card view
     if (target.dataset.role === 'close-button') {
         close();
     }
 
+    //calls task card view
     if (target.dataset.role === 'task-name') {
         const name = target.dataset.source;
         showTask(name);
     }
 
+    //calls project creation
     if (target.dataset.role === 'add-button' 
     && target.dataset.source === 'projects') {
         createProject();
         return;
     }
 
+    //shows project in 'main' div
     if (target.dataset.role === 'project-label') {
         const name = target.dataset.source;
         showProject(name);
         return;
     }
 
+    //calls task creating, assigned o project
     if (target.dataset.role === 'project-add-button') {
         const name = target.dataset.source;
         addTaskToProject(name);
         return
     }
 
+    //calls func to handle dropdown menus
     if (target.dataset.role === 'label' 
     && target.dataset.source !== "inbox"
     && target.dataset.source !== "today"
@@ -804,7 +911,7 @@ function handleClicks(e) {
     }
 }
 
-const pageStart = () => {
+const pageStart = () => { //handles page staring condition
     console.log('DOM content loaded')
     showInbox();
     const buffer = manageTasks.global.read()
