@@ -294,6 +294,32 @@ input[type="checkbox"]:checked +
     grid-row: 3 / 4;
     background-color: var(--col-second);
     color: var(--col-fourth);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.5rem;
+}
+
+.footer > a {
+    color: var(--col-fourth);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    text-shadow: 0 0 3px var(--col-third);
+}
+
+.footer > a:hover {
+    cursor: pointer;
+}
+
+.git-logo {
+    display: inline-block;
+    background-image: url(./github.svg);
+    height: 0.75em;
+    width: 0.75em;
+    margin-bottom: 0.5em;
 }
 
 /* card screen section */
